@@ -107,6 +107,29 @@ ulx3s.bit: ulx3s.config
 	ecppack $< $@ --compress
 
 
+## TANG NANO 9K
+
+NANO9K_SOURCES = $(wildcard fpga/nano9k/*.sv) $(wildcard src/*.sv)
+
+synth-nano9k: nano9k.json
+
+pnr-nano9k: nano9k.bit
+
+upload-nano9k: nano9k.bit
+	openFPGALoader --board=tangnano9k -f nano9k.bit
+
+nano9k.json: $(NANO9K_SOURCES)
+	yosys -l $(basename $@)-yosys.log -DSYNTHESIS -DNANO9k -p 'synth_gowin -top nano9k_top -json $@' $^
+
+nano9k_pnr.json: nano9k.json fpga/nano9k/nano9k.cst
+	nextpnr-himbaechel --json $< --write $@ \
+		--device GW1NR-LV9QN88PC6/I5 \
+		--vopt family=GW1N-9C \
+		--vopt cst=fpga/nano9k/nano9k.cst
+
+nano9k.bit: nano9k_pnr.json
+	gowin_pack -d GW1N-9C -o $@ $<
+
 ## Basys 3
 
 BASYS3_SOURCES = $(wildcard fpga/basys3/*.sv) $(wildcard src/*.sv)
