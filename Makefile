@@ -8,7 +8,7 @@ RUN_TAG = $(shell ls librelane/runs/ -1 | tail -n 1)
 # Macro - LibreLane
 
 macro:
-	cd librelane; librelane config.yaml --pdk $(PDK)
+	cd librelane; librelane config.yaml --pdk $(PDK) --flow VHDLClassic
 .PHONY: macro
 
 macro-openroad:
