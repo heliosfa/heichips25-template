@@ -55,32 +55,32 @@ module nano9k_top (
 );
   
     // Input frequency:        27.000 MHz
-    // Requested frequency:    100 MHz
-    // Achieved frequency:     100.28571428571429 MHz
+    // Requested frequency:    125.875 MHz
+    // Achieved frequency:     126 MHz
     
     logic locked;
     logic clk_100
   
-    rPLL #( // For GW1NR-9C C6/I5 (Tang Nano 9K proto dev board)
+     rPLL #( // For GW1NR-9C C6/I5 (Tang Nano 9K proto dev board)
       .FCLKIN("27"),
-      .IDIV_SEL(6), // -> PFD = 3.857142857142857 MHz (range: 3-400 MHz)
-      .FBDIV_SEL(25), // -> CLKOUT = 100.28571428571429 MHz (range: 3.125-600 MHz)
-      .ODIV_SEL(4) // -> VCO = 401.14285714285717 MHz (range: 400-1200 MHz)
-    ) pll (
+      .IDIV_SEL(2), // -> PFD = 9 MHz (range: 3-400 MHz)
+      .FBDIV_SEL(13), // -> CLKOUT = 126 MHz (range: 3.125-600 MHz)
+      .ODIV_SEL(4) // -> VCO = 504 MHz (range: 400-1200 MHz)
+    ) pll ( 
       .CLKOUTP(),
       .CLKOUTD(),
       .CLKOUTD3(),
       .RESET(1'b0),
-      .RESET_P(1'b0), 
+      .RESET_P(1'b0),
       .CLKFB(1'b0),
       .FBDSEL(6'b0),
       .IDSEL(6'b0),
       .ODSEL(6'b0),
-      .PSDA(4'b0), 
+      .PSDA(4'b0),
       .DUTYDA(4'b0),
       .FDLY(4'b0),
       .CLKIN(CLK), // 27 MHz
-      .CLKOUT(clk_100), // 100.28571428571429 MHz
+      .CLKOUT(clk_100), // 126 MHz
       .LOCK(locked)
     );
 
