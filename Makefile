@@ -113,10 +113,10 @@ NANO9K_SOURCES = $(wildcard fpga/nano9k/*.sv) $(wildcard src/*.sv)
 
 synth-nano9k: nano9k.json
 
-pnr-nano9k: nano9k.bit
+pnr-nano9k: nano9k.fs
 
 upload-nano9k: nano9k.bit
-	openFPGALoader --board=tangnano9k -f nano9k.bit
+	openFPGALoader --board=tangnano9k nano9k.bit
 
 nano9k.json: $(NANO9K_SOURCES)
 	yosys -l $(basename $@)-yosys.log -DSYNTHESIS -DNANO9k -p 'synth_gowin -top nano9k_top -json $@' $^
@@ -127,7 +127,7 @@ nano9k_pnr.json: nano9k.json fpga/nano9k/nano9k.cst
 		--vopt family=GW1N-9C \
 		--vopt cst=fpga/nano9k/nano9k.cst
 
-nano9k.bit: nano9k_pnr.json
+nano9k.fs: nano9k_pnr.json
 	gowin_pack -d GW1N-9C -o $@ $<
 
 ## Basys 3
