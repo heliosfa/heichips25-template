@@ -115,8 +115,8 @@ synth-nano9k: nano9k.json
 
 pnr-nano9k: nano9k.fs
 
-upload-nano9k: nano9k.bit
-	openFPGALoader --board=tangnano9k nano9k.bit
+upload-nano9k: nano9k.fs
+	openFPGALoader --board=tangnano9k nano9k.fs
 
 nano9k.json: $(NANO9K_SOURCES)
 	yosys -l $(basename $@)-yosys.log -DSYNTHESIS -DNANO9k -p 'synth_gowin -top nano9k_top -json $@' $^
