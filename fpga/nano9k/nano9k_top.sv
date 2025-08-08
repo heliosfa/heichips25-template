@@ -13,7 +13,7 @@ module nano9k_top (
     output logic [2:0] TMDS_D_P,
     output logic [2:0] TMDS_D_N,
     output logic TMDS_CLK_P,
-    output logic TMDS_CLK_N
+    output logic TMDS_CLK_N,
 
     // Pascal Tang Nano 9K Baseboard mappings
     // https://github.com/gfcwfzkm/t9k-baseboard
@@ -59,7 +59,7 @@ module nano9k_top (
     // Achieved frequency:     100.28571428571429 MHz
     
     logic locked;
-    logic clk_100
+    logic clk_100;
   
     rPLL #( // For GW1NR-9C C6/I5 (Tang Nano 9K proto dev board)
       .FCLKIN("27"),
