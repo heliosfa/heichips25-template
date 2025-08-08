@@ -7,7 +7,7 @@ module nano9k_top (
 
     // Onboard peripherals
     output logic [5:0] LEDS_N,
-    output logic BTN_N,         // S2 Button
+    input logic BTN_N,         // S2 Button
 
     // HDMI
     output logic [2:0] TMDS_D_P,
