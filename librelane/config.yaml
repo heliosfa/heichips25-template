@@ -12,7 +12,7 @@ VHDL_FILES:
   - dir::../src/gol_test.vhdl
   - dir::../src/pix_Streacher.vhdl
 CLOCK_PORT: clk
-CLOCK_PERIOD: 8 # 8ns = 125MHz
+CLOCK_PERIOD: 10 # 10ns = 100MHz
 
 # Reduce wasted space
 TOP_MARGIN_MULT: 1

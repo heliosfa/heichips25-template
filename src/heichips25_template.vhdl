@@ -48,7 +48,7 @@ begin
     uio_oe <= (others => '0');
 
 
-    uo_out(3) <= clk_video;
+    tmds_clk <= clk_video;
 
     --! Video Image Generator
     VIDEOGEN : entity work.video
@@ -110,7 +110,7 @@ begin
             TMDS_serial_r => tmds_r,
             TMDS_serial_g => tmds_g,
             TMDS_serial_b => tmds_b,
-            TMDS_serial_c => tmds_clk
+            TMDS_serial_c => clk_video
     );
 
 end architecture;

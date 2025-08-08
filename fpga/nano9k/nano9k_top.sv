@@ -105,7 +105,7 @@ module nano9k_top (
         .uio_oe (uio_oe),   // IOs: Enable path (active high: 0=input, 1=output)
         .ena    (ena),      // enable - goes high when design is selected
         .clk    (clk),      // clock
-        .rst_n  (rst_n)     // not reset
+        .rst_n  (rst_n),    // not reset
         .tmds_b (tmds_b),   // Blue
         .tmds_r (tmds_r),   // Red
         .tmds_g (tmds_g),   // Green
@@ -139,7 +139,7 @@ module nano9k_top (
     );
 
     ELVDS_OBUF LVDS_TMDS_CLK (  // Clk
-      .I(uo_out[3]),
+      .I(tmds_clk),
       .O(TMDS_CLK_P),
       .OB(TMDS_CLK_N)
     );
