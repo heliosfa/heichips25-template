@@ -139,7 +139,7 @@ module nano9k_top (
     // Inputs
 
     assign uio_in = '0;
-    assign ui_in = ~BTN_N;
+    assign ui_in[7:1] = '0;
 
 endmodule
 

@@ -28,7 +28,7 @@ architecture rtl of shader is
 
 begin
 
-    r <= std_logic_vector(temp_r(9 downto 2));
+    r <= std_logic_vector(temp_r(7 downto 0));
     b <= std_logic_vector(temp_b(7 downto 0));
     g <= std_logic_vector(temp_g(7 downto 0));
 
@@ -41,7 +41,11 @@ begin
         end if;
     end process CLKREG;
 
-    COMBLOGIC : process (video_x, video_y, frame_end, line_end, shader_counter_reg) begin
+    COMBLOGIC : process (video_x, video_y, frame_end, line_end, shader_counter_reg) 
+        variable x_counter : unsigned(9 downto 0);
+        variable pattern_one : unsigned(9 downto 0);
+        variable pattern_two : unsigned(9 downto 0);
+    begin
 
         -- We don't want accidental latches
         temp_r <= (others => '0');
@@ -70,7 +74,13 @@ begin
         --    b <= (others => '1');
         --end if; 
 
-        temp_r <= (((video_x + shader_counter_reg) xor video_y)  mod 7) + (video_x / GRADIENT_SCALE);
+        x_counter := (video_x + shader_counter_reg);
+
+        pattern_one := ((x_counter xor video_y) mod 7) mod 3;
+        pattern_two := (((x_counter + 2) xor video_y) mod 7) mod 3;
+
+        temp_r <= (((video_x + shader_counter_reg) xor video_y) mod 9) or ((((video_x + shader_counter_reg) + 1) xor video_y) mod 9) or ((((video_x + shader_counter_reg) xor video_y) mod 7) mod 3);
+        --temp_r <= (((video_x + shader_counter_reg) xor video_y)  mod 7) + (video_x / GRADIENT_SCALE);
         temp_g <= (((video_x+5 + shader_counter_reg) xor video_y)  mod 7) + (video_x / GRADIENT_SCALE);
         temp_b <= (((video_x-8 + shader_counter_reg) xor video_y)  mod 7) + (video_x / GRADIENT_SCALE);
 

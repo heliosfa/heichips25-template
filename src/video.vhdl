@@ -98,7 +98,7 @@ begin
     end process;
 
     --! Next-State-Logic, generating the swiss flag
-    CHFLAG : process (video_x, video_y, draw_active)
+    CHFLAG : process (video_x, video_y, draw_active, animation_select)
         variable tmp_y : unsigned(9 downto 0);
     begin
         r_next <= (others => '0');
@@ -107,7 +107,7 @@ begin
         
         -- Only assign stuff when we're even active, right?
         if (draw_active = '1') then
-            if animation_select = '0' then
+            if animation_select = '1' then
                 r_next <= shader_red;
                 g_next <= shader_green;
                 b_next <= shader_blue;
