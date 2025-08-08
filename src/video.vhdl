@@ -32,6 +32,8 @@ entity video is
         --! Synchronous Reset signal (active-high)
         reset   : in  std_logic;
 
+        animation_select : in std_logic;
+
         --! RGB Color Output
         r,g,b   : out std_logic_vector(7 downto 0);
         --! Horizontal Sync signal (active-high)
@@ -44,30 +46,27 @@ entity video is
 end entity video;
 
 architecture rtl of video is
-    --! Constants for the color strip test
-    constant testbar : positive := 80;
-    
-    --! Horizontal resolution
-    constant GRADIENT_SCALE : positive := 12;    -- Gradient scaling factor
-    
+
     --! X coordinates of the currently drawn pixel
-    signal draw_x : unsigned(9 downto 0);
+    signal video_x : unsigned(9 downto 0);
     --! Y coordinates of the currently drawn pixel
-    signal draw_y : unsigned(9 downto 0);
+    signal video_y : unsigned(9 downto 0);
     --! Active signal to indicate if the current pixel is being drawn
     signal draw_active : std_logic;
-
-    signal video_x : unsigned(9 downto 0);
-    signal video_y : unsigned(9 downto 0);
-
-    signal box_x_reg, box_x_next : unsigned(9 downto 0) := (others => '0');
-
-    signal increment_counter : std_logic := '0';
+    signal line_end_reached : std_logic;
+    signal frame_end_reached : std_logic;
 
     --! Video Color Output Registers
     signal r_next, r_reg, g_next, g_reg, b_next, b_reg : std_logic_vector(7 downto 0);
     --! Video Control / Timing Output Registers
     signal de_next, de_reg, hsync_next, hsync_reg, vsync_next, vsync_reg : std_logic;
+
+    --! Shader color output
+    signal shader_red, shader_green, shader_blue : std_logic_vector(7 downto 0);
+
+    --! Color from the LUT
+    signal lut_red, lut_green, lut_blue : std_logic_vector(7 downto 0);
+
 begin
     -- Register to output assignments
     r <= r_reg;
@@ -76,9 +75,6 @@ begin
     de <= de_reg;
     hsync <= hsync_reg;
     vsync <= vsync_reg;
-
-    draw_x <= video_x(9 downto 0);
-    draw_y <= video_y(9 downto 0);
 
     --! Register Process
     REGBANK : process (reset, clk) begin
@@ -90,7 +86,6 @@ begin
                 de_reg <= '0';
                 hsync_reg <= '0';
                 vsync_reg <= '0';
-                box_x_reg <= (others => '0');
             else
                 r_reg <= r_next;
                 g_reg <= g_next;
@@ -98,46 +93,29 @@ begin
                 de_reg <= de_next;
                 hsync_reg <= hsync_next;
                 vsync_reg <= vsync_next;
-                box_x_reg <= box_x_next;
             end if;
         end if;
     end process;
 
     --! Next-State-Logic, generating the swiss flag
-    CHFLAG : process (draw_x, draw_y, draw_active, box_x_reg, increment_counter)
+    CHFLAG : process (video_x, video_y, draw_active)
         variable tmp_y : unsigned(9 downto 0);
     begin
         r_next <= (others => '0');
         g_next <= (others => '0');
         b_next <= (others => '0');
-        box_x_next <= box_x_reg;
-
-        if (increment_counter = '1') then
-            box_x_next <= box_x_reg + 1;
-        end if;
         
+        -- Only assign stuff when we're even active, right?
         if (draw_active = '1') then
-            -- if unsigned(std_logic_vector(unsigned((draw_y + box_x_reg) xor (draw_x + box_x_reg)) mod 7) or 
-            --    std_logic_vector(unsigned((draw_y + box_x_reg) xor (draw_x + box_x_reg)) mod 9))>1 then 
-            --     r_next <= '1';
-            --     g_next <= '1';
-            -- else
-            --     g_next <= '0';
-            --     r_next <= '1';
-            -- end if;
-            -- if unsigned(std_logic_vector(unsigned((draw_y + box_x_reg + 1) xor (draw_x + box_x_reg + 1)) mod 7) or std_logic_vector(unsigned((draw_y +box_x_reg+1) xor (draw_x+box_x_reg+1)) mod 9))>1 then 
-            --     b_next <= '0';
-            -- else
-            --     b_next <= '1';
-            -- end if;       
-
-
-            tmp_y  := draw_y; --! + sin( draw_x);
-
-            r_next := (((draw_x + box_x_reg) xor tmp_y)  mod 7) + (draw_x * GRADIENT_SCALE);
-            g_next := (((draw_x+1 + box_x_reg) xor tmp_y)  mod 7) + (draw_x * GRADIENT_SCALE);
-            b_next := (((draw_x-2 + box_x_reg) xor tmp_y)  mod 7) + (draw_x * GRADIENT_SCALE);
-
+            if animation_select = '0' then
+                r_next <= shader_red;
+                g_next <= shader_green;
+                b_next <= shader_blue;
+            else
+                r_next <= lut_red;
+                g_next <= lut_green;
+                b_next <= lut_blue;
+            end if;
         end if;
     end process CHFLAG;
 
@@ -159,10 +137,35 @@ begin
             disp_active => draw_active,
             disp_x      => video_x,
             disp_y      => video_y,
-            frame_end   => increment_counter,
+            frame_end   => frame_end_reached,
+            line_end    => line_end_reached,
             hdmi_vsync  => vsync_next,
             hdmi_hsync  => hsync_next,
             hdmi_de     => de_next
+    );
+
+    FANCY_SHADER : entity work.shader
+        port map (
+            clk         => clk,
+            reset       => reset,
+            video_x     => video_x,
+            video_y     => video_y,
+            disp_active => draw_active,
+            frame_end   => frame_end_reached,
+            line_end    => line_end_reached,
+            r           => shader_red,
+            g           => shader_green,
+            b           => shader_blue
+    );
+
+    TEST_LUT_THINGY : entity work.gol_test
+        port map (
+            clk => clk,
+            reset => reset,
+            line_end => line_end_reached,
+            r => lut_red,
+            g => lut_green,
+            b => lut_blue
     );
 
 end architecture;

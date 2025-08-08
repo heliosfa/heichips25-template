@@ -50,25 +50,19 @@ begin
 
     uo_out(3) <= clk_video;
 
-    -- Repurposed video test generator, only supports 3-bit colors, so only the MSB
-    -- of the color signal vectors is set
-    --! Video Test Image Generator
+    --! Video Image Generator
     VIDEOGEN : entity work.video
         port map (
             clk   => clk_video,
             reset => reset,
-            r     => red(7),
-            g     => green(7),
-            b     => blue(7),
+            animation_select => ui_in(0),
+            r     => red,
+            g     => green,
+            b     => blue,
             hsync => hsync,
             vsync => vsync,
             de    => display_enable
     );
-
-    -- Set the remaining bits of the color signal vectors to zero
-    red(6 downto 0)   <= (others => red(7));
-    green(6 downto 0) <= (others => green(7));
-    blue(6 downto 0)  <= (others => blue(7));
 
     --! Encode the video red channel to a TMDS signal
     TMDS_RED : entity work.tmds_encoder

@@ -7,7 +7,7 @@ module nano9k_top (
 
     // Onboard peripherals
     output logic [5:0] LEDS_N,
-    output logic BTN_N,         // S2 Button
+    input logic BTN_N,         // S2 Button
 
     // HDMI
     output logic [2:0] TMDS_D_P,
@@ -106,6 +106,7 @@ module nano9k_top (
 
     // Assignments
     
+    assign ui_in[0] = BTN_N;
     assign ena = 1'b1;
     assign rst_n = RST_N && locked;
     assign clk = clk_100;

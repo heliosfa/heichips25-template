@@ -67,6 +67,8 @@ entity vtgen is
 
         --! Frame End signal (active for one cycle)
         frame_end   : out std_logic;
+        --! Line End signal (active for one cycle)
+        line_end    : out std_logic;
 
         --! HDMI V-SYNC signal
         hdmi_vsync  : out std_logic;
@@ -108,7 +110,7 @@ begin
 
     --! Pixel Position Counter
     --! Increments the pixel position registers
-    PIXELMOVE : process (clk, reset) is begin
+    PIXELCNT : process (clk, reset) is begin
         if rising_edge(clk) then
             if reset = '1' then
                 disp_x_reg <= (others => '0');
@@ -126,7 +128,7 @@ begin
                 end if;
             end if;
         end if;
-    end process PIXELMOVE;
+    end process PIXELCNT;
 
     --! Sync Signal Generator
     --! Generates the sync signals for the HDMI output
@@ -135,17 +137,18 @@ begin
         hdmi_hsync <= '1';
         hdmi_de <= '0';
         disp_active <= '1';
+        line_end <= '0';
         frame_end <= '0';
 
-        if ((disp_x_reg >= H_SYNC_START) and (disp_x_reg < H_SYNC_END)) then
+        if (disp_x_reg >= H_SYNC_START) and (disp_x_reg < H_SYNC_END) then
             hdmi_hsync <= '0';
         end if;
 
-        if ((disp_y_reg >= V_SYNC_START) and (disp_y_reg < V_SYNC_END)) then
+        if (disp_y_reg >= V_SYNC_START) and (disp_y_reg < V_SYNC_END) then
             hdmi_vsync <= '0';
         end if;
 
-        if ((disp_x_reg <= H_DRAWING_END) and (disp_y_reg <= V_DRAWING_END)) then
+        if (disp_x_reg <= H_DRAWING_END) and (disp_y_reg <= V_DRAWING_END) then
             hdmi_de <= '1';
         end if;
 
@@ -153,9 +156,14 @@ begin
             disp_active <= '0';
         end if;
 
-        if (disp_x_reg = H_VISIBLE) and (disp_y_reg = V_VISIBLE) then
-            frame_end <= '1';
+        if disp_x_reg = H_VISIBLE then
+            if disp_y_reg = V_VISIBLE then
+                frame_end <= '1';
+            else
+                line_end <= '1';
+            end if;
         end if;
+
     end process SYNCGEN;
 
 end architecture;
