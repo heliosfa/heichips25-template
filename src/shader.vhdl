@@ -59,30 +59,32 @@ begin
         end if;
 
         -- Shader magic
-        --if unsigned(std_logic_vector(unsigned((video_y + shader_counter_reg) xor (video_x + shader_counter_reg)) mod 7) or 
-        --   std_logic_vector(unsigned((video_y + shader_counter_reg) xor (video_x + shader_counter_reg)) mod 9))>1 then 
-        --    r <= (others => '1');
-        --    g <= (others => '1');
-        --else
-        --    g <= (others => '0');
-        --    r <= (others => '1');
-        --end if;
-        --if unsigned(std_logic_vector(unsigned((video_y + shader_counter_reg + 1) xor (video_x + shader_counter_reg + 1)) mod 7) or 
-        --   std_logic_vector(unsigned((video_y +shader_counter_reg+1) xor (video_x+shader_counter_reg+1)) mod 9))>1 then 
-        --    b <= (others => '0');
-        --else
-        --    b <= (others => '1');
-        --end if; 
+        if unsigned(std_logic_vector(unsigned((video_y + shader_counter_reg) xor (video_x + shader_counter_reg)) mod 7) or 
+           std_logic_vector(unsigned((video_y + shader_counter_reg) xor (video_x + shader_counter_reg)) mod 9))>1 then 
+            temp_b <= (others => '1');
+        end if;
+        
+        if unsigned(std_logic_vector(unsigned((video_y + shader_counter_reg) xor (video_x + shader_counter_reg)) mod 7) or 
+           std_logic_vector(unsigned((video_y + shader_counter_reg + 1) xor (video_x + shader_counter_reg)) mod 9))>1 then 
+            temp_g <= (others => '1');
+        end if;
 
-        x_counter := (video_x + shader_counter_reg);
+        if unsigned(std_logic_vector(unsigned((video_y + shader_counter_reg + 1) xor (video_x + shader_counter_reg + 1)) mod 7) or 
+           std_logic_vector(unsigned((video_y +shader_counter_reg + 2) xor (video_x+shader_counter_reg+1)) mod 9))>1 then 
+            temp_r <= (others => '0');
+        else
+            temp_r <= (others => '1');
+        end if; 
 
-        pattern_one := ((x_counter xor video_y) mod 7) mod 3;
-        pattern_two := (((x_counter + 2) xor video_y) mod 7) mod 3;
+        --x_counter := (video_x + shader_counter_reg);
+        --pattern_one := ((x_counter xor video_y) mod 7) mod 3;
+        --pattern_two := (((x_counter + 2) xor video_y) mod 7) mod 3;
+        --temp_r <= (video_x or video_y) mod 7;
 
-        temp_r <= (((video_x + shader_counter_reg) xor video_y) mod 9) or ((((video_x + shader_counter_reg) + 1) xor video_y) mod 9) or ((((video_x + shader_counter_reg) xor video_y) mod 7) mod 3);
+        --temp_r <= (((video_x + shader_counter_reg) xor video_y) mod 9) or ((((video_x + shader_counter_reg) + 1) xor video_y) mod 9) or ((((video_x + shader_counter_reg) xor video_y) mod 7) mod 3);
         --temp_r <= (((video_x + shader_counter_reg) xor video_y)  mod 7) + (video_x / GRADIENT_SCALE);
-        temp_g <= (((video_x+5 + shader_counter_reg) xor video_y)  mod 7) + (video_x / GRADIENT_SCALE);
-        temp_b <= (((video_x-8 + shader_counter_reg) xor video_y)  mod 7) + (video_x / GRADIENT_SCALE);
+        --temp_g <= (((video_x+5 + shader_counter_reg) xor video_y)  mod 7) + (video_x / GRADIENT_SCALE);
+        --temp_b <= (((video_x-8 + shader_counter_reg) xor video_y)  mod 7) + (video_x / GRADIENT_SCALE);
 
     end process COMBLOGIC;
 
