@@ -13,16 +13,16 @@ entity heichips25_template is
         --! 126 MHz clock
         clk         : in  std_logic;
         --! Active-Low Reset
-        rst_n       : in  std_logic;
+        rst_n       : in  std_logic
 
         --! TMDS Blue (TMDS channel 0)
-        tmds_0      : out std_logic;
+        --tmds_0      : out std_logic;
         --! TMDS Green (TMDS channel 1)
-        tmds_1      : out std_logic;
+        --tmds_1      : out std_logic;
         --! TMDS Red (TMDS channel 2)
-        tmds_2      : out std_logic;
+        --tmds_2      : out std_logic;
         --! TMDS Clock (TMDS channel 3)
-        tmds_clk    : out std_logic
+        --tmds_clk    : out std_logic
     );
 end entity heichips25_template;
 
@@ -39,7 +39,16 @@ architecture rtl of heichips25_template is
 
 begin
 
+    -- Active-high resets
     reset <= not rst_n;
+
+    -- Get rid of unassigned stuff warnings
+    uo_out(7 downto 4) <= (others => '0');
+    uio_out <= (others => '0');
+    uio_oe <= (others => '0');
+
+
+    uo_out(3) <= clk_video;
 
     -- Repurposed video test generator, only supports 3-bit colors, so only the MSB
     -- of the color signal vectors is set
@@ -104,10 +113,10 @@ begin
             TMDS_parallel_r => red_tmds_par,
             TMDS_parallel_g => green_tmds_par,
             TMDS_parallel_b => blue_tmds_par,
-            TMDS_serial_r => tmds_2,
-            TMDS_serial_g => tmds_1,
-            TMDS_serial_b => tmds_0,
-            TMDS_serial_c => tmds_clk
+            TMDS_serial_r => uo_out(2),--tmds_2,
+            TMDS_serial_g => uo_out(1),--tmds_1,
+            TMDS_serial_b => uo_out(0),--tmds_0,
+            TMDS_serial_c => clk_video--tmds_clk
     );
 
 end architecture;

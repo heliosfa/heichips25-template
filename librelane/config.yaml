@@ -1,7 +1,12 @@
 # LibreLane configuration file
 
 DESIGN_NAME: heichips25_template
-VHDL_FILES: dir::../src/heichips25_template.sv
+VHDL_FILES: 
+  - dir::../src/heichips25_template.vhdl
+  - dir::../src/tmds_encoder.vhdl
+  - dir::../src/TMDS_serializer.vhdl
+  - dir::../src/video.vhdl
+  - dir::../src/vtgen.vhdl
 CLOCK_PORT: clk
 CLOCK_PERIOD: 8 # 8ns = 125MHz
 

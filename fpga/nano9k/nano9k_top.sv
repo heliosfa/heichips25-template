@@ -110,14 +110,30 @@ module nano9k_top (
     assign rst_n = RST_N && locked;
     assign clk = clk_100;
     
-    // Output PMOD - Tiny VGA
+    // TMDS Encoder
+    ELVDS_OBUF LVDS_TMDS_0 (
+      .I(uo_out[0]),
+      .O(TMDS_D_P[0]),
+      .OB(TMDS_D_N[0])
+    );
 
-    assign {P2_1, P2_5} = {uo_out[0], uo_out[4]};
-    assign {P2_2, P2_6} = {uo_out[1], uo_out[5]};
-    assign {P2_3, P2_7} = {uo_out[2], uo_out[6]};
-    
-    assign P2_4 = uo_out[3];
-    assign P2_8 = uo_out[7];
+    ELVDS_OBUF LVDS_TMDS_1 (
+      .I(uo_out[1]),
+      .O(TMDS_D_P[1]),
+      .OB(TMDS_D_N[1])
+    );
+
+    ELVDS_OBUF LVDS_TMDS_2 (
+      .I(uo_out[2]),
+      .O(TMDS_D_P[2]),
+      .OB(TMDS_D_N[2])
+    );
+
+    ELVDS_OBUF LVDS_TMDS_CLK (
+      .I(uo_out[3]),
+      .O(TMDS_CLK_P),
+      .OB(TMDS_CLK_N)
+    );
     
     // Inputs
 

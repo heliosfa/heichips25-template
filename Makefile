@@ -109,7 +109,8 @@ ulx3s.bit: ulx3s.config
 
 ## TANG NANO 9K
 
-NANO9K_SOURCES = $(wildcard fpga/nano9k/*.sv) $(wildcard src/*.sv)
+NANO9K_SOURCES = $(wildcard src/*.vhdl)
+NANO9K_SYSVER = $(wildcard fpga/nano9k/*.sv)
 
 synth-nano9k: nano9k.json
 
@@ -119,7 +120,7 @@ upload-nano9k: nano9k.fs
 	openFPGALoader --board=tangnano9k nano9k.fs
 
 nano9k.json: $(NANO9K_SOURCES)
-	yosys -l $(basename $@)-yosys.log -DSYNTHESIS -DNANO9k -p 'synth_gowin -top nano9k_top -json $@' $^
+	yosys -m ghdl -l $(basename $@)-yosys.log -DSYNTHESIS -DNANO9k -p 'ghdl $^ -e; synth_gowin -top nano9k_top -json $@' $(NANO9K_SYSVER)
 
 nano9k_pnr.json: nano9k.json fpga/nano9k/nano9k.cst
 	nextpnr-himbaechel --json $< --write $@ \
