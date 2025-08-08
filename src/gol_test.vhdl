@@ -8,6 +8,8 @@ entity gol_test is
         clk   : in std_logic;
         reset : in std_logic;
         line_end : in std_logic;
+        frame_end : in std_logic;
+        display_enable : in std_logic;
 
         r,g,b : out std_logic_vector(7 downto 0)
     );
@@ -16,6 +18,7 @@ end entity gol_test;
 architecture rtl of gol_test is
 
     signal gol_counter_reg : unsigned(3 downto 0);
+    signal col_to_lut : std_logic_vector(3 downto 0);
 
 begin
 
@@ -26,9 +29,7 @@ begin
             if reset = '1' then
                 gol_counter_reg <= (others => '0');
             else
-                if line_end = '1' then
-                    gol_counter_reg <= gol_counter_reg + 1;
-                end if;
+                gol_counter_reg <= gol_counter_reg + 1;
             end if;
         end if;
     end process;
@@ -39,6 +40,17 @@ begin
             red_channel     => r,
             green_channel   => g,
             blue_channel    => b
+    );
+
+    pix_Streacher_inst : entity work.pix_Streacher
+        port map (
+            clk_25MHz => clk,
+            rst => reset,
+            line_end => line_end,
+            frame_end => frame_end,
+            DE_enable => display_enable,
+            data_in => std_logic_vector(gol_counter_reg),
+            data_out => col_to_lut
     );
 
 end architecture;

@@ -163,6 +163,8 @@ begin
             clk => clk,
             reset => reset,
             line_end => line_end_reached,
+            frame_end => frame_end_reached,
+            display_enable => draw_active,
             r => lut_red,
             g => lut_green,
             b => lut_blue
