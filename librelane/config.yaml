@@ -7,6 +7,10 @@ VHDL_FILES:
   - dir::../src/TMDS_serializer.vhdl
   - dir::../src/video.vhdl
   - dir::../src/vtgen.vhdl
+  - dir::../src/shader.vhdl
+  - dir::../src/color_lut.vhdl
+  - dir::../src/gol_test.vhdl
+  - dir::../src/pix_Streacher.vhdl
 CLOCK_PORT: clk
 CLOCK_PERIOD: 8 # 8ns = 125MHz
 
@@ -21,7 +25,7 @@ FP_SIZING: absolute
 
 # Small DEF template
 DIE_AREA: [0, 0, 500, 200]
-FP_DEF_TEMPLATE: dir::def/heichips25_template_small.def
+FP_DEF_TEMPLATE: dir::def/heichips25_template_small_hdmi.def
 
 # Large DEF template
 #DIE_AREA: [0, 0, 500, 415]

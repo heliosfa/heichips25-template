@@ -92,6 +92,10 @@ module nano9k_top (
     logic [7:0] uo_out;
     logic [7:0] uio_out;
     logic [7:0] uio_oe;
+    logic tmds_b;
+    logic tmds_r;
+    logic tmds_g;
+    logic tmds_clk;
     
     heichips25_template heichips25_template (
         .ui_in  (ui_in),    // Dedicated inputs
@@ -102,6 +106,10 @@ module nano9k_top (
         .ena    (ena),      // enable - goes high when design is selected
         .clk    (clk),      // clock
         .rst_n  (rst_n)     // not reset
+        .tmds_b (tmds_b),   // Blue
+        .tmds_r (tmds_r),   // Red
+        .tmds_g (tmds_g),   // Green
+        .tmds_clk (tmds_clk)
     );
 
     // Assignments
@@ -112,25 +120,25 @@ module nano9k_top (
     assign clk = clk_100;
     
     // TMDS Encoder
-    ELVDS_OBUF LVDS_TMDS_0 (
-      .I(uo_out[0]),
+    ELVDS_OBUF LVDS_TMDS_0 (  // Blue
+      .I(tmds_b),
       .O(TMDS_D_P[0]),
       .OB(TMDS_D_N[0])
     );
 
-    ELVDS_OBUF LVDS_TMDS_1 (
-      .I(uo_out[1]),
+    ELVDS_OBUF LVDS_TMDS_1 (  // Green
+      .I(tmds_g),
       .O(TMDS_D_P[1]),
       .OB(TMDS_D_N[1])
     );
 
-    ELVDS_OBUF LVDS_TMDS_2 (
-      .I(uo_out[2]),
+    ELVDS_OBUF LVDS_TMDS_2 (   // Red
+      .I(tmds_r),
       .O(TMDS_D_P[2]),
       .OB(TMDS_D_N[2])
     );
 
-    ELVDS_OBUF LVDS_TMDS_CLK (
+    ELVDS_OBUF LVDS_TMDS_CLK (  // Clk
       .I(uo_out[3]),
       .O(TMDS_CLK_P),
       .OB(TMDS_CLK_N)
