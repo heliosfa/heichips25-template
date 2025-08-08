@@ -33,7 +33,7 @@ entity video is
         reset   : in  std_logic;
 
         --! RGB Color Output
-        r,g,b   : out std_logic;
+        r,g,b   : out std_logic_vector(7 downto 0);
         --! Horizontal Sync signal (active-high)
         hsync   : out std_logic;
         --! Vertical Sync signal (active-high)
@@ -46,7 +46,10 @@ end entity video;
 architecture rtl of video is
     --! Constants for the color strip test
     constant testbar : positive := 80;
-
+    
+    --! Horizontal resolution
+    constant GRADIENT_SCALE : positive := 12;    -- Gradient scaling factor
+    
     --! X coordinates of the currently drawn pixel
     signal draw_x : unsigned(9 downto 0);
     --! Y coordinates of the currently drawn pixel
@@ -62,7 +65,7 @@ architecture rtl of video is
     signal increment_counter : std_logic := '0';
 
     --! Video Color Output Registers
-    signal r_next, r_reg, g_next, g_reg, b_next, b_reg : std_logic;
+    signal r_next, r_reg, g_next, g_reg, b_next, b_reg : std_logic_vector(7 downto 0);
     --! Video Control / Timing Output Registers
     signal de_next, de_reg, hsync_next, hsync_reg, vsync_next, vsync_reg : std_logic;
 begin
@@ -81,9 +84,9 @@ begin
     REGBANK : process (reset, clk) begin
         if rising_edge(clk) then
             if reset = '1' then
-                r_reg <= '0';
-                g_reg <= '0';
-                b_reg <= '0';
+                r_reg <= (others => '0');
+                g_reg <= (others => '0');
+                b_reg <= (others => '0');
                 de_reg <= '0';
                 hsync_reg <= '0';
                 vsync_reg <= '0';
@@ -95,17 +98,18 @@ begin
                 de_reg <= de_next;
                 hsync_reg <= hsync_next;
                 vsync_reg <= vsync_next;
-                box_x_reg <= (others => '0');
+                box_x_reg <= box_x_next;
             end if;
         end if;
     end process;
 
     --! Next-State-Logic, generating the swiss flag
     CHFLAG : process (draw_x, draw_y, draw_active, box_x_reg, increment_counter)
+        variable tmp_y : unsigned(9 downto 0);
     begin
-        r_next <= '0';
-        g_next <= '0';
-        b_next <= '0';
+        r_next <= (others => '0');
+        g_next <= (others => '0');
+        b_next <= (others => '0');
         box_x_next <= box_x_reg;
 
         if (increment_counter = '1') then
@@ -113,19 +117,27 @@ begin
         end if;
         
         if (draw_active = '1') then
-            if unsigned(std_logic_vector(unsigned((draw_y + box_x_reg) xor (draw_x + box_x_reg)) mod 7) or 
-               std_logic_vector(unsigned((draw_y + box_x_reg) xor (draw_x + box_x_reg)) mod 9))>1 then 
-                r_next <= '1';
-                g_next <= '1';
-            else
-                g_next <= '0';
-                r_next <= '1';
-            end if;
-            if unsigned(std_logic_vector(unsigned((draw_y + box_x_reg + 1) xor (draw_x + box_x_reg + 1)) mod 7) or std_logic_vector(unsigned((draw_y +box_x_reg+1) xor (draw_x+box_x_reg+1)) mod 9))>1 then 
-                b_next <= '0';
-            else
-                b_next <= '1';
-            end if;       
+            -- if unsigned(std_logic_vector(unsigned((draw_y + box_x_reg) xor (draw_x + box_x_reg)) mod 7) or 
+            --    std_logic_vector(unsigned((draw_y + box_x_reg) xor (draw_x + box_x_reg)) mod 9))>1 then 
+            --     r_next <= '1';
+            --     g_next <= '1';
+            -- else
+            --     g_next <= '0';
+            --     r_next <= '1';
+            -- end if;
+            -- if unsigned(std_logic_vector(unsigned((draw_y + box_x_reg + 1) xor (draw_x + box_x_reg + 1)) mod 7) or std_logic_vector(unsigned((draw_y +box_x_reg+1) xor (draw_x+box_x_reg+1)) mod 9))>1 then 
+            --     b_next <= '0';
+            -- else
+            --     b_next <= '1';
+            -- end if;       
+
+
+            tmp_y  := draw_y; --! + sin( draw_x);
+
+            r_next := (((draw_x + box_x_reg) xor tmp_y)  mod 7) + (draw_x * GRADIENT_SCALE);
+            g_next := (((draw_x+1 + box_x_reg) xor tmp_y)  mod 7) + (draw_x * GRADIENT_SCALE);
+            b_next := (((draw_x-2 + box_x_reg) xor tmp_y)  mod 7) + (draw_x * GRADIENT_SCALE);
+
         end if;
     end process CHFLAG;
 
