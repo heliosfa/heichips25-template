@@ -23,21 +23,21 @@ architecture rtl of color_lut is
 
     constant color_lookup_table : color_lut_t := (
         (red => x"00", green => x"00", blue => x"00"),  -- BLACK
-        (red => x"00", green => x"00", blue => x"AA"),  -- BLUE
-        (red => x"00", green => x"AA", blue => x"00"),  -- GREEN
-        (red => x"00", green => x"AA", blue => x"AA"),  -- CYAN
-        (red => x"AA", green => x"00", blue => x"00"),  -- RED
-        (red => x"AA", green => x"00", blue => x"AA"),  -- MAGENTA
-        (red => x"AA", green => x"AA", blue => x"00"),  -- DARK YELLOW
-        (red => x"AA", green => x"AA", blue => x"AA"),  -- LIGHT GRAY
-        (red => x"55", green => x"55", blue => x"55"),  -- DARK GRAY
-        (red => x"55", green => x"55", blue => x"FF"),  -- LIGHT BLUE  
-        (red => x"85", green => x"FF", blue => x"85"),  -- LIGHT GREEN
-        (red => x"85", green => x"FF", blue => x"FF"),  -- LIGHT CYAN
-        (red => x"FF", green => x"55", blue => x"55"),  -- LIGHT RED
-        (red => x"FF", green => x"55", blue => x"FF"),  -- LIGHT MAGENTA
-        (red => x"FF", green => x"FF", blue => x"55"),  -- YELLOW
-        (red => x"FF", green => x"FF", blue => x"FF")   -- WHITE
+        (red => x"FF", green => x"00", blue => x"00"),  -- Red
+        (red => x"FF", green => x"80", blue => x"00"),  -- Orange
+        (red => x"FF", green => x"BF", blue => x"00"),  -- Yellow-Orange
+        (red => x"FF", green => x"FF", blue => x"00"),  -- Yellow
+        (red => x"BF", green => x"FF", blue => x"00"),  -- Yellow-Green
+        (red => x"80", green => x"FF", blue => x"00"),  -- Green-Yellow
+        (red => x"40", green => x"FF", blue => x"00"),  -- Yellowish Green
+        (red => x"00", green => x"FF", blue => x"00"),  -- Green
+        (red => x"00", green => x"FF", blue => x"80"),  -- Green-Cyan
+        (red => x"00", green => x"FF", blue => x"BF"),  -- Cyan-Green
+        (red => x"00", green => x"FF", blue => x"FF"),  -- Cyan
+        (red => x"00", green => x"80", blue => x"FF"),  -- Blue-Cyan
+        (red => x"00", green => x"00", blue => x"FF"),  -- Blue
+        (red => x"4B", green => x"00", blue => x"82"),  -- Indigo
+        (red => x"8F", green => x"00", blue => x"FF")   -- Violet
     );
 
 begin
