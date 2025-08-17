@@ -9,7 +9,7 @@ entity shader is
         
         video_x     : in  unsigned(9 downto 0);
         video_y     : in  unsigned(9 downto 0);
-
+        
         disp_active : in  std_logic;
         frame_end   : in  std_logic;
         line_end    : in  std_logic;

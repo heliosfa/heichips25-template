@@ -13,6 +13,8 @@
 --! - disp_active: Active-high signal indicating that the current pixel is within the visible area
 --! - disp_x: Current pixel position in the horizontal direction
 --! - disp_y: Current pixel position in the vertical direction
+--! - frame_end: Strobe signal, active for one cycle when disp_x = H_VISIBLE
+--! - line_end: Strobe signal, active for one cycle when disp_x = H_VISIBLE AND disp_y = V_VISIBLE
 --! - hdmi_vsync: Active-high signal indicating the vertical sync pulse
 --! - hdmi_hsync: Active-high signal indicating the horizontal sync pulse
 --! - hdmi_de: Active-high signal indicating the data enable signal
@@ -104,7 +106,7 @@ architecture rtl of vtgen is
     --! Pixel Y position register
     signal disp_y_reg : unsigned(integer(ceil(log2(real(V_MAX))))-1 downto 0);
 begin
-    --! Output of the coordinates. Y is inverted to set the origin to the left bottem corener
+    --! Output of the coordinates
     disp_x <= disp_x_reg;
     disp_y <= disp_y_reg;
 
@@ -132,7 +134,7 @@ begin
 
     --! Sync Signal Generator
     --! Generates the sync signals for the HDMI output
-    SYNCGEN : process (disp_x_reg, disp_y_reg, clk) is begin
+    SYNCGEN : process (disp_x_reg, disp_y_reg) is begin
         hdmi_vsync <= '1';
         hdmi_hsync <= '1';
         hdmi_de <= '0';

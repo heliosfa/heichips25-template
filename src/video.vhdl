@@ -1,20 +1,20 @@
 -- TEROSHDL Documentation:
---! @title Swiss Flag Test Image Generator
+--! @title Video Combine
 --! @author Pascal G. (gfcwfzkm)
 --! @version 1.1
 --! @date 19.03.2024
 --! @brief Generates a test image with the Swiss flag and color strips for video output.
---!
+--! 
 --! Developed for the BFH oscilloscope project.
---!
+--! 
 --! This module generates a test image for video output, which includes the Swiss flag
 --! and color strips at the top and bottom of the screen. While the video timing generator
 --! generates a video resolution of 1920x1080p, only half that resolution is actually used
 --! by the test image generator, resulting in an actual resolution of 960x540p, with a 
---! Swiss flag in the center of the size 320x320, and a color bar at the top and bottom
---!
+--! Swiss flag in the center of the size 320x320, and a color bar at the top and bottom.
+--! 
 --! Only the MSB of the RGB color signals are used, as this is a 3-bit color output.
---!
+--! 
 --! Proportions of the swiss flag are from wikimedia:
 --! https://commons.wikimedia.org/wiki/File:Swiss_Flag_Specifications.svg
 --! ![Swiss Flag Proportions](https://upload.wikimedia.org/wikipedia/commons/6/61/Swiss_Flag_Specifications.svg)
@@ -97,7 +97,7 @@ begin
         end if;
     end process;
 
-    --! Next-State-Logic, generating the swiss flag
+    --! Next-State-Logic, simply a mux choosing the "video / color source "
     CHFLAG : process (video_x, video_y, draw_active, animation_select)
         variable tmp_y : unsigned(9 downto 0);
     begin
@@ -119,7 +119,7 @@ begin
         end if;
     end process CHFLAG;
 
-    --! Video Timing Generator, configured for 1920x1080p@30Hz
+    --! Video Timing Generator, configured for 640x480@60Hz
     VIDEO_TIMING_GENERATOR : entity work.vtgen
         generic map (
             H_VISIBLE => 640,  --! Horizontal resolution
@@ -127,7 +127,7 @@ begin
             H_SYNC    => 96,   --! Horizontal Sync Pulse
             H_BPORCH  => 48,   --! Horizontal Back Porch
             V_VISIBLE => 480,  --! Vertical resolution
-            V_FPORCH  => 19,   --! Vertical Front Porch
+            V_FPORCH  => 10,   --! Vertical Front Porch
             V_SYNC    => 2,    --! Vertical Sync Pulse
             V_BPORCH  => 33    --! Vertical Back Porch,
         )
