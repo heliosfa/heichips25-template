@@ -10,7 +10,7 @@ VHDL_FILES:
   - dir::../src/shader.vhdl
   - dir::../src/color_lut.vhdl
   - dir::../src/gol_test.vhdl
-  - dir::../src/pix_Streacher.vhdl
+  #- dir::../src/pix_Streacher.vhdl
 CLOCK_PORT: clk
 CLOCK_PERIOD: 10 # 10ns = 100MHz
 

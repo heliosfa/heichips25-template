@@ -112,8 +112,17 @@ module nano9k_top (
         .tmds_clk (tmds_clk)
     );
 
+
+    mem_if mem_if(
+        .clk(clk), 
+        .rst_n(rst_n),
+        .pixel(ui_in[7:4]),
+        .bank(uio_out[0]),
+        .addr(uo_out),
+        .pixSel(uio_out[4:1])
+    );
+
     // Assignments
-    
     assign ui_in[0] = BTN_N;
     assign ena = 1'b1;
     assign rst_n = RST_N && locked;
@@ -147,7 +156,7 @@ module nano9k_top (
     // Inputs
 
     assign uio_in = '0;
-    assign ui_in[7:1] = '0;
+    assign ui_in[3:1] = '0;
 
 endmodule
 
