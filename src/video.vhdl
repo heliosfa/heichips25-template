@@ -41,7 +41,12 @@ entity video is
         --! Vertical Sync signal (active-high)
         vsync   : out std_logic;
         --! Data Enable signal (active-high)
-        de      : out std_logic
+        de      : out std_logic;
+
+        pixel_in : in std_logic_vector(3 downto 0);
+        addr : out std_logic_vector(8 downto 0);
+        pix_sel : out std_logic_vector(2 downto 0);
+        bank : out std_logic
     );
 end entity video;
 
@@ -167,7 +172,11 @@ begin
             display_enable => draw_active,
             r => lut_red,
             g => lut_green,
-            b => lut_blue
+            b => lut_blue,
+            pixel_in => pixel_in,
+            addr => addr,
+            pix_sel => pix_sel,
+            bank => bank
     );
 
 end architecture;

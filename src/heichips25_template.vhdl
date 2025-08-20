@@ -43,8 +43,8 @@ begin
     reset <= not rst_n;
 
     -- Get rid of unassigned stuff warnings
-    uo_out(7 downto 4) <= (others => '0');
-    uio_out <= (others => '0');
+    --uo_out(7 downto 4) <= (others => '0');
+    uio_out(7 downto 5) <= (others => '0');
     uio_oe <= (others => '0');
 
 
@@ -61,7 +61,12 @@ begin
             b     => blue,
             hsync => hsync,
             vsync => vsync,
-            de    => display_enable
+            de    => display_enable,
+            pixel_in => ui_in(7 downto 4),
+            addr(8) => uio_out(0),
+            addr(7 downto 0) =>uo_out,
+            pix_sel => uio_out(4 downto 2),
+            bank => uio_out(1)
     );
 
     --! Encode the video red channel to a TMDS signal

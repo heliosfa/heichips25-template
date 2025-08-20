@@ -1,34 +1,58 @@
 module pixel_feeder(
-  input logic clk, clk_25, rst_n,
+  input logic clk_25, rst_n,
 
-  output logic [3:0] pixelOut,
-  input logic [3:0] pixelIn,
+  output logic [3:0] pixel_out,
+  input logic [3:0] pixel_in,
 
   // Address pins
   output logic bank,
   output logic [8:0] addr,
-  output logic [2:0] pixSel
-
+  output logic [2:0] pix_sel,
+  
+  input logic disp_active, line_end, frame_end
 );
+  assign bank = 0;                    // Pin bank to 0 for the moment
 
   logic [3:0] row [5:0];              // 64-pixel buffer to hold an entire row
   logic [3:0] h_counter, v_counter;   // Counters for tracking the /10 for H and V.
   logic [5:0] h_pix, v_pix;           // Local pixel counts
   
-  // Grab the specific pixel for the row
+  
   always_comb begin
-    pixelOut = row[h_pix];
+    pixel_out = row[h_pix];            // Grab the specific pixel for the row
+  end
+  
+  // Pixel Fetcher state machine
+  // If we are at v_counter 9, we want to read the pixel for the next row into the buffer when h_counter gets to 9
+  // We can get away with one state for reading memory as memory is running at 126 MHz while this is running at 25 MHz,
+  // So memory will be ready on the negative clock edge...
+  enum {idle = 0, mem_read} state, next_state;
+  
+  always_comb begin
+    if (state == mem_read) begin
+      {addr,pix_sel} = {v_pix,h_pix};   // Set the memory address
+      next_state = idle;
+    end
+    else begin
+      if((v_counter == 9) && (h_counter == 9) && disp_active) next_state = mem_read;
+      //{addr,pix_sel} = '0;              // Clear the memory address
+    end
+  end
+
+  always_ff @(posedge clk_25) begin
+    if(!rst_n) state <= idle;
+    else state <= next_state;
+  end
+
+  always_ff @(negedge clk_25) begin
+    if(state == mem_read) row[h_pix + 1] <= pixel_in;      // Save the pixel from the memory interface.
   end
   
 
-  // Pixel Fetcher state machine
-  // If we are at v_counter 9, we want to read the pixel for the next row into the buffer when h_counter gets to 9
-  
-
-  
+  // The counters that make it all work:  
   // Horizontal pixel counter. Increments every 10th pixel
-  always_ff @(posedge clk_25) begin   
-    if (!disp_active) begin 
+  always_ff @(posedge clk_25) begin
+    if (!disp_active || !rst_n) begin 
         h_counter <= 9;                // Hold at 9 during display inactive to resync.
         h_pix <= 63;                    // Hold horizontal pixel count at 63 during display inactive to resync.
     end
@@ -43,9 +67,9 @@ module pixel_feeder(
   
   // Vertical pixel count, incremented on line_end. Async reset on frame_end
   always_ff @(posedge line_end or posedge frame_end) begin   
-    if (frame_end) begin
+    if (frame_end || !rst_n) begin
       v_counter <= 9;     // resync counter on frame end
-      else v_pix <= 47;
+      v_pix <= 47;
     end
     else if (v_counter < 9) v_counter <= v_counter + 1;
     else begin 

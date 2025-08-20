@@ -11,7 +11,12 @@ entity gol_test is
         frame_end : in std_logic;
         display_enable : in std_logic;
 
-        r,g,b : out std_logic_vector(7 downto 0)
+        r,g,b : out std_logic_vector(7 downto 0);
+
+        pixel_in : in std_logic_vector(3 downto 0);
+        addr : out std_logic_vector(8 downto 0);
+        pix_sel : out std_logic_vector(2 downto 0);
+        bank : out std_logic
     );
 end entity gol_test;
 
@@ -51,6 +56,21 @@ begin
             DE_enable => display_enable,
             data_in => std_logic_vector(gol_counter_reg),
             data_out => col_to_lut
+    );
+
+    pixel_feeder_inst : entity work.pixel_feeder
+        port map (
+            clk_25 => clk,
+            rst_n => not reset,
+            line_end => line_end,
+            frame_end => frame_end,
+            disp_active => display_enable,
+            pixel_out => std_logic_vector(col_to_lut),
+            pixel_in => pixel_in,
+            addr => addr,
+            pix_sel => pix_sel,
+            bank => bank
+
     );
 
 end architecture;
