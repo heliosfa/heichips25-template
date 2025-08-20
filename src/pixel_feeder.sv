@@ -30,7 +30,10 @@ module pixel_feeder(
   
   always_comb begin
     if (state == mem_read) begin
-      {addr,pix_sel} = {v_pix,h_pix};   // Set the memory address
+      if (h_pix == 0) {addr,pix_sel} = {(v_pix),63};                // We end up reading the last pixel of the current line at the start of the line
+      else if (v_pix == 48) {addr,pix_sel} = {6'b000000,h_pix}-1;   // Edge case if we are on the last line
+      else {addr,pix_sel} = {(v_pix+1),h_pix}-1;      // Set the memory address to get the nextrow
+      
       next_state = idle;
     end
     else begin
@@ -45,7 +48,11 @@ module pixel_feeder(
   end
 
   always_ff @(negedge clk_25) begin
-    if(state == mem_read) row[h_pix + 1] <= pixel_in;      // Save the pixel from the memory interface.
+    if(state == mem_read) begin
+      // Save the pixel from the memory interface.
+      if(h_pix == 0) row[63] <= pixel_in;
+      else row[h_pix-1] <= pixel_in;
+    end
   end
   
 
@@ -69,7 +76,7 @@ module pixel_feeder(
   always_ff @(posedge line_end or posedge frame_end) begin   
     if (frame_end || !rst_n) begin
       v_counter <= 9;     // resync counter on frame end
-      v_pix <= 47;
+      v_pix <= 0;
     end
     else if (v_counter < 9) v_counter <= v_counter + 1;
     else begin 
