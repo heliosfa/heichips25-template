@@ -117,9 +117,9 @@ module nano9k_top (
         .clk(clk), 
         .rst_n(rst_n),
         .pixel(ui_in[7:4]),
-        .bank(uio_out[0]),
-        .addr(uo_out),
-        .pixSel(uio_out[4:1])
+        .bank(uio_out[1]),
+        .addr({uio_out[0],uo_out}),
+        .pix_sel(uio_out[4:2])
     );
 
     // Assignments
