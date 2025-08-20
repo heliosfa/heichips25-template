@@ -16,7 +16,9 @@ entity gol_test is
         pixel_in : in std_logic_vector(3 downto 0);
         addr : out std_logic_vector(8 downto 0);
         pix_sel : out std_logic_vector(2 downto 0);
-        bank : out std_logic
+        bank : out std_logic;                           -- this needs to be held at 0 until we need it 
+        mem_read : out std_logic;
+        mem_row : out std_logic
     );
 end entity gol_test;
 
@@ -69,7 +71,8 @@ begin
             pixel_in => pixel_in,
             addr => addr,
             pix_sel => pix_sel,
-            bank => bank
+            mem_read => mem_read,
+            mem_row => mem_row
 
     );
 
