@@ -7,16 +7,13 @@ module SRAM #(parameter ADR = 10, parameter DAT = 32, parameter DPTH = 1024)(
   input logic WE, RD, clk, rst_n
 );
 
-  // **************
-  // Instr Mem
-  // **************
+  //internal variables
+  logic [DAT-1:0] SRAMs [DPTH-1:0];
+
   initial 
   begin
       $readmemh("image.txt", SRAMs);
   end
-
-  //internal variables
-  logic [DAT-1:0] SRAMs [DPTH-1:0];
 
   always_ff @(posedge clk or negedge rst_n) begin
     if (!rst_n) begin

@@ -5,18 +5,24 @@ module pixel_feeder(
   input logic [3:0] pixel_in,       // Input pixel, from memory
 
   // Address pins
-  output logic mem_read,            // Indicates if we are actively using memory
-  output logic mem_row,             // indicates if we are in the row where we read memory
   output logic [8:0] addr,          // Memory address we want
   output logic [2:0] pix_sel,       // Pixel from memory that we want
   
-  input logic disp_active, line_end, frame_end    // Video signals for sync
+  input logic disp_active, line_end, frame_end,    // Video signals for sync
+
+  output logic mem_read,            // Indicates if we are actively using memory
+  output logic mem_row              // indicates if we are in the row where we read memory
 );
 
   logic [3:0] row [5:0];              // 64-pixel buffer to hold an entire row
   logic [3:0] h_counter, v_counter;   // Counters for tracking the /10 for H and V.
   logic [5:0] h_pix, v_pix;           // Local pixel counts
   
+  // Pixel Fetcher state machine
+  // If we are at v_counter 9, we want to read the pixel for the next row into the buffer when h_counter gets to 9
+  // We can get away with one state for reading memory as memory is running at 126 MHz while this is running at 25 MHz,
+  // So memory will be ready on the negative clock edge...
+  enum {s_idle = 0, s_mem_read = 1, s_blank} state, next_state;
   
   always_comb begin
     pixel_out = row[h_pix];            // Grab the specific pixel for the row
@@ -26,34 +32,34 @@ module pixel_feeder(
     else mem_row = 0;
   end
   
-  // Pixel Fetcher state machine
-  // If we are at v_counter 9, we want to read the pixel for the next row into the buffer when h_counter gets to 9
-  // We can get away with one state for reading memory as memory is running at 126 MHz while this is running at 25 MHz,
-  // So memory will be ready on the negative clock edge...
-  enum {s_idle = 0, s_mem_read = 1, s_blank} state, next_state;
-  
+  // Next state logic
+  always_comb begin
+    next_state = s_idle;
+    case (state)
+      s_mem_read :  next_state = s_idle;
+      s_blank :     begin
+                      if (disp_active) next_state = s_idle;
+                      else next_state = s_blank;
+                    end
+      default :     begin
+                      if((v_counter == 9) && (h_counter == 9) && (disp_active||line_end)) next_state = s_mem_read;
+                      else if(!disp_active) next_state = s_blank;
+                      else next_state = s_idle;
+                    end
+    endcase
+  end
+
+  // Address decode output logic
   always_comb begin
     if (state == s_mem_read) begin
-      if (v_pix == 48) begin
+      if (v_pix == 48) begin // Edge case if we are on the last line
         if (h_pix == 63 && v_counter == 0) {addr,pix_sel} = {6'b000000,6'b000000};
         else {addr,pix_sel} = {6'b000000,h_pix}-1;
-      end    // Edge case if we are on the last line
-      else begin 
+      end else begin 
         if (h_pix == 63 && v_counter == 0) {addr,pix_sel} = {(v_pix),6'b111111};   //Edge case to grab the last pixel
         else {addr,pix_sel} = {(v_pix+1),h_pix}-1;                              // Set the memory address to get the nextrow
       end
-      
-      next_state = s_idle;
-    end
-    else begin
-      {addr,pix_sel} = '0;              // Clear the memory address
-      if (state == s_blank) begin
-        if (disp_active) next_state = s_idle;
-        else next_state = s_blank;
-      end
-      else if((v_counter == 9) && (h_counter == 9) && (disp_active||line_end)) next_state = s_mem_read;
-      else if(!disp_active) next_state = s_blank;
-    end
+    end else  {addr,pix_sel} = '0;              // Clear the memory address
   end
 
   always_ff @(posedge clk_25) begin
