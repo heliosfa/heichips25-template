@@ -98,11 +98,13 @@ if (state == s_blank || !rst_n) begin
       v_counter <= 9;     // resync counter on frame end
       v_pix <= 0;
     end
-    else if (v_counter < 9) v_counter <= v_counter + 1;
-    else begin 
-      v_counter <= 0;
-      if (v_pix < 47) v_pix <= v_pix +1;              // Increment the vertical pixel co-ordinate
-      else v_pix <= 0;
+    else if (state != s_blank) begin
+      if (v_counter < 9) v_counter <= v_counter + 1;
+      else begin 
+        v_counter <= 0;
+        if (v_pix < 47) v_pix <= v_pix +1;              // Increment the vertical pixel co-ordinate
+        else v_pix <= 0;
+      end
     end
   end    
   
