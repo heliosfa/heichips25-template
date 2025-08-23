@@ -29,3 +29,8 @@ basys3.fasm
 basys3.frames
 basys3.bit
 basys3-yosys.log
+
+nano9k_pnr.json
+nano9k-yosys.log
+nano9k.fs
+nano9k.json
