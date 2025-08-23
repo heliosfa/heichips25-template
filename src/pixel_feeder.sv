@@ -95,7 +95,7 @@ if (state == s_blank || !rst_n) begin
   // Vertical pixel count, incremented on line_end. Async reset on frame_end
   always_ff @(posedge line_end or posedge frame_end) begin   
     if (frame_end || !rst_n) begin
-      v_counter <= 9;     // resync counter on frame end
+      v_counter <= 0;     // resync counter on frame end
       v_pix <= 0;
     end
     else if (state != s_blank) begin
