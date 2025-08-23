@@ -111,6 +111,8 @@ module video (
     .r(lut_red),
     .g(lut_green),
     .b(lut_blue),
+    .video_x(video_x),
+    .video_y(video_y),
 
     .pixel_in(pixel_in),
     .bank(bank),

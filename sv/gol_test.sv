@@ -8,6 +8,9 @@ module gol_test (
   input logic display_enable,
   output logic[7:0] r, g, b,
 
+  input logic [9:0] video_x,
+  input logic [9:0] video_y,
+
   input logic [3:0] pixel_in,
 
   // Memory addresses
@@ -58,6 +61,8 @@ module gol_test (
   pixel_feeder pixel_feeder_inst (
     .clk_25(clk),
     .rst_n(rst_n),
+    .video_x(video_x),
+    .video_y(video_y),
     .pixel_out(pf_out),
     .pixel_in(pixel_in),
     .mem_read(mem_read),
