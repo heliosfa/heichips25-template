@@ -111,8 +111,7 @@ module nano9k_top (
         .tmds_g (tmds_g),   // Green
         .tmds_clk (tmds_clk)
     );
-
-
+    
     mem_if mem_if(
         .clk(clk), 
         .rst_n(rst_n),
@@ -157,7 +156,7 @@ module nano9k_top (
     // Inputs
 
     assign uio_in = '0;
-    assign ui_in[3:1] = '0;
+    assign ui_in[3:2] = '0;
 
 endmodule
 

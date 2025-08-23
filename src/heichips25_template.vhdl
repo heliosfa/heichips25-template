@@ -47,9 +47,6 @@ begin
     uio_out(7 downto 5) <= (others => '0');
     uio_oe <= (others => '0');
 
-
-    --tmds_clk <= clk_video;
-
     --! By 5 Clock Divider
     clock_5_div_inst : entity work.clock_5_div(rtl)
     port map (

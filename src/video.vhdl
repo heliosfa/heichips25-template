@@ -90,8 +90,8 @@ begin
         end if;
     end process;
 
-    --! Next-State-Logic, simply a mux choosing the "video / color source "
-    CHFLAG : process (draw_active, animation_select, shader_red, shader_green, shader_blue, lut_red, lut_green, lut_blue)
+    --! Basic next-state-logic and selecting the video source based on 'animation_select'
+    VIDEO_SELECT : process (draw_active, animation_select, shader_red, shader_green, shader_blue, lut_red, lut_green, lut_blue)
     begin
         r_next <= (others => '0');
         g_next <= (others => '0');
@@ -109,7 +109,7 @@ begin
                 b_next <= lut_blue;
             end if;
         end if;
-    end process CHFLAG;
+    end process VIDEO_SELECT;
 
     --! Video Timing Generator, configured for 640x480@60Hz
     VIDEO_TIMING_GENERATOR : entity work.vtgen

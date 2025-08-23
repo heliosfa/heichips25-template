@@ -108,11 +108,11 @@ begin
             v_pix_reg <= (others => '0');
         elsif line_end'event and line_end = '1' then
             if state /= s_blank then
-                if v_counter_reg < to_unsigned(9, v_counter_reg'length) then
+                if v_counter_reg < 9 then
                     v_counter_reg <= v_counter_reg + 1;
                 else
                     v_counter_reg <= (others => '0');
-                    if v_pix_reg < to_unsigned(47, v_pix_reg'length) then
+                    if v_pix_reg < 47 then
                         v_pix_reg <= v_pix_reg + 1; -- Increment the vertical pixel co-ordinate
                     else
                         v_pix_reg <= (others => '0');
