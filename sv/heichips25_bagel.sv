@@ -28,7 +28,7 @@ module heichips25_bagel(
   assign tmds_clk = clk_tmds;   // TMDS clock output
 
   // Unused Pins
-  assign uio_out[7:5] = 0;
+  assign uio_out[5] = 0;
   assign uio_oe = '0;
 
   `ifdef GOWIN_FPGA
@@ -57,7 +57,9 @@ module heichips25_bagel(
     .pixel_in(ui_in[7:4]),
     .bank(uio_out[1]),
     .addr({uio_out[0],uo_out}),
-    .pix_sel(uio_out[4:2])
+    .pix_sel(uio_out[4:2]),
+    .mem_read(uio_out[7]),
+    .mem_row(uio_out[6])
   );
 
   tmds_encoder tmds_red (

@@ -10,7 +10,9 @@ module video (
   // Memory addresses
   output logic bank,
   output logic [8:0] addr,
-  output logic [2:0] pix_sel
+  output logic [2:0] pix_sel,
+
+  output logic mem_read, mem_row
 );
 
   logic [9:0] video_x, video_y;   // Video co-ordinates
@@ -118,6 +120,9 @@ module video (
     .bank(bank),
     .addr(addr),
     .pix_sel(pix_sel),
+
+    .mem_read(mem_read),
+    .mem_row(mem_row),
 
     .source(animation_select[1])
   );

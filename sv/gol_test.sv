@@ -18,7 +18,9 @@ module gol_test (
   output logic [8:0] addr,
   output logic [2:0] pix_sel,
 
-  input logic source
+  input logic source,
+
+  output logic mem_read, mem_row
 );
   logic rst_n;
 
@@ -27,8 +29,6 @@ module gol_test (
   logic [7:0] blue_channel;
   logic [3:0] data_out;
   logic [3:0] gol_counter_reg, pf_out, col_to_lut;
-
-  logic mem_read, mem_row;
 
   assign rst_n = ~reset;
   assign bank = 0;
