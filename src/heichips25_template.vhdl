@@ -48,10 +48,18 @@ begin
     uio_oe <= (others => '0');
 
 
-    tmds_clk <= clk_video;
+    --tmds_clk <= clk_video;
+
+    --! By 5 Clock Divider
+    clock_5_div_inst : entity work.clock_5_div(rtl)
+    port map (
+        clk => clk,
+        reset => reset,
+        clkdiv => clk_video
+    );
 
     --! Video Image Generator
-    VIDEOGEN : entity work.video
+    VIDEOGEN : entity work.video(rtl)
         port map (
             clk   => clk_video,
             reset => reset,
@@ -110,7 +118,7 @@ begin
             TMDS_serial_r => tmds_r,
             TMDS_serial_g => tmds_g,
             TMDS_serial_b => tmds_b,
-            TMDS_serial_c => clk_video
+            TMDS_serial_c => tmds_clk
     );
 
 end architecture;

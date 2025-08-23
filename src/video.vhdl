@@ -3,21 +3,9 @@
 --! @author Pascal G. (gfcwfzkm)
 --! @version 1.1
 --! @date 19.03.2024
---! @brief Generates a test image with the Swiss flag and color strips for video output.
+--! @brief Gives a static color bar, two shaders or memory video output
 --! 
---! Developed for the BFH oscilloscope project.
---! 
---! This module generates a test image for video output, which includes the Swiss flag
---! and color strips at the top and bottom of the screen. While the video timing generator
---! generates a video resolution of 1920x1080p, only half that resolution is actually used
---! by the test image generator, resulting in an actual resolution of 960x540p, with a 
---! Swiss flag in the center of the size 320x320, and a color bar at the top and bottom.
---! 
---! Only the MSB of the RGB color signals are used, as this is a 3-bit color output.
---! 
---! Proportions of the swiss flag are from wikimedia:
---! https://commons.wikimedia.org/wiki/File:Swiss_Flag_Specifications.svg
---! ![Swiss Flag Proportions](https://upload.wikimedia.org/wikipedia/commons/6/61/Swiss_Flag_Specifications.svg)
+--! TODO: Add proper docs here
 --!
 
 library ieee;
@@ -98,8 +86,7 @@ begin
     end process;
 
     --! Next-State-Logic, simply a mux choosing the "video / color source "
-    CHFLAG : process (video_x, video_y, draw_active, animation_select)
-        variable tmp_y : unsigned(9 downto 0);
+    CHFLAG : process (draw_active, animation_select, shader_red, shader_green, shader_blue, lut_red, lut_green, lut_blue)
     begin
         r_next <= (others => '0');
         g_next <= (others => '0');
@@ -107,7 +94,7 @@ begin
         
         -- Only assign stuff when we're even active, right?
         if (draw_active = '1') then
-            if animation_select = '1' then
+            if animation_select = '0' then
                 r_next <= shader_red;
                 g_next <= shader_green;
                 b_next <= shader_blue;
