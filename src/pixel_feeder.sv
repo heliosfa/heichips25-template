@@ -14,7 +14,7 @@ module pixel_feeder(
   output logic mem_row              // indicates if we are in the row where we read memory
 );
 
-  logic [3:0] row [5:0];              // 64-pixel buffer to hold an entire row
+  logic [3:0] row [64];              // 64-pixel buffer to hold an entire row
   logic [3:0] h_counter, v_counter;   // Counters for tracking the /10 for H and V.
   logic [5:0] h_pix, v_pix;           // Local pixel counts
   
