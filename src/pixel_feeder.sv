@@ -22,7 +22,7 @@ module pixel_feeder(
   // If we are at v_counter 9, we want to read the pixel for the next row into the buffer when h_counter gets to 9
   // We can get away with one state for reading memory as memory is running at 126 MHz while this is running at 25 MHz,
   // So memory will be ready on the negative clock edge...
-  enum {s_idle = 0, s_mem_read = 1, s_blank} state, next_state;
+  enum {s_idle = 0, s_mem_read = 1, s_blank, s_post_idle} state, next_state;
   
   always_comb begin
     pixel_out = row[h_pix];            // Grab the specific pixel for the row
@@ -43,6 +43,7 @@ module pixel_feeder(
                     end
       default :     begin
                       if((v_counter == 9) && (h_counter == 9) && (disp_active||line_end)) next_state = s_mem_read;
+                      else if(!disp_active && state == s_idle) next_state = s_post_idle;
                       else if(!disp_active) next_state = s_blank;
                       else next_state = s_idle;
                     end
@@ -78,10 +79,10 @@ module pixel_feeder(
 
   // The counters that make it all work:  
   // Horizontal pixel counter. Increments every 10th pixel
-always_ff @(posedge clk_25 or negedge rst_n) begin
-if (state == s_blank || !rst_n) begin 
-        h_counter <= 0;                // Hold at 0 during display inactive to resync.
-        h_pix <= 0;                    // Hold horizontal pixel count at 0 during display inactive to resync.
+  always_ff @(posedge clk_25 or negedge rst_n) begin
+  if (state == s_blank || !rst_n) begin 
+      h_counter <= 0;                // Hold at 0 during display inactive to resync.
+      h_pix <= 0;                    // Hold horizontal pixel count at 0 during display inactive to resync.
     end
     else if (disp_active) begin              // Only increment if the display is active
       if (h_counter < 9) h_counter <= h_counter + 1;
@@ -91,7 +92,7 @@ if (state == s_blank || !rst_n) begin
       end
     end
   end
-  
+    
   // Vertical pixel count, incremented on line_end. Async reset on frame_end
   always_ff @(posedge line_end or posedge frame_end) begin   
     if (frame_end || !rst_n) begin
