@@ -55,7 +55,7 @@ module gol_test (
   end
 
   
-  pixel_feeder (
+  pixel_feeder pixel_feeder_inst (
     .clk_25(clk),
     .rst_n(rst_n),
     .pixel_out(pf_out),
