@@ -2,32 +2,38 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
-
 entity gol_test is
     port (
-        clk   : in std_logic;
-        reset : in std_logic;
-        line_end : in std_logic;
-        frame_end : in std_logic;
-        display_enable : in std_logic;
+        clk             : in std_logic;
+        reset           : in std_logic;
+        line_end        : in std_logic;
+        frame_end       : in std_logic;
+        display_enable  : in std_logic;
 
-        r,g,b : out std_logic_vector(7 downto 0);
+        animation_sel   : in std_logic;
 
-        pixel_in : in std_logic_vector(3 downto 0);
-        addr : out std_logic_vector(8 downto 0);
-        pix_sel : out std_logic_vector(2 downto 0);
-        bank : out std_logic;                           -- this needs to be held at 0 until we need it 
-        mem_read : out std_logic;
-        mem_row : out std_logic
+        r,g,b           : out std_logic_vector(7 downto 0);
+
+        pixel_in        : in std_logic_vector(3 downto 0);
+        addr            : out std_logic_vector(8 downto 0);
+        pix_sel         : out std_logic_vector(2 downto 0);
+        bank            : out std_logic;                           -- this needs to be held at 0 until we need it 
+        mem_read        :  out std_logic;
+        mem_row         : out std_logic
     );
 end entity gol_test;
 
 architecture rtl of gol_test is
 
     signal gol_counter_reg : unsigned(3 downto 0);
+
+    signal lut_pixel_streacher : std_logic_vector(3 downto 0);
+    signal lut_pixel_feeder : std_logic_vector(3 downto 0);
     signal col_to_lut : std_logic_vector(3 downto 0);
 
 begin
+
+    bank <= '0';
 
     process (clk)
     begin
@@ -40,10 +46,12 @@ begin
             end if;
         end if;
     end process;
+
+    col_to_lut <= lut_pixel_feeder when animation_sel = '0' else lut_pixel_streacher;
     
     color_lut_inst : entity work.color_lut
         port map (
-            in_color        => std_logic_vector(gol_counter_reg),
+            in_color        => col_to_lut,
             red_channel     => r,
             green_channel   => g,
             blue_channel    => b
@@ -57,23 +65,22 @@ begin
             frame_end => frame_end,
             DE_enable => display_enable,
             data_in => std_logic_vector(gol_counter_reg),
-            data_out => col_to_lut
+            data_out => lut_pixel_streacher
     );
 
     pixel_feeder_inst : entity work.pixel_feeder
         port map (
             clk_25 => clk,
-            rst_n => not reset,
+            reset => reset,
             line_end => line_end,
             frame_end => frame_end,
             disp_active => display_enable,
-            pixel_out => std_logic_vector(col_to_lut),
+            pixel_out => lut_pixel_feeder,
             pixel_in => pixel_in,
             addr => addr,
             pix_sel => pix_sel,
             mem_read => mem_read,
             mem_row => mem_row
-
     );
 
 end architecture;

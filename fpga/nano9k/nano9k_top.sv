@@ -123,7 +123,8 @@ module nano9k_top (
     );
 
     // Assignments
-    assign ui_in[0] = BTN_N;
+    assign ui_in[0] = 0;
+    assign ui_in[1] = !BTN_N;
     assign ena = 1'b1;
     assign rst_n = RST_N && locked;
     assign clk = clk_100;

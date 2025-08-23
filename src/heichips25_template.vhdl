@@ -55,7 +55,7 @@ begin
         port map (
             clk   => clk_video,
             reset => reset,
-            animation_select => ui_in(0),
+            animation_select => ui_in(1 downto 0),
             r     => red,
             g     => green,
             b     => blue,

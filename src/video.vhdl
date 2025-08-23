@@ -32,7 +32,7 @@ entity video is
         --! Synchronous Reset signal (active-high)
         reset   : in  std_logic;
 
-        animation_select : in std_logic;
+        animation_select : in std_logic_vector(1 downto 0);
 
         --! RGB Color Output
         r,g,b   : out std_logic_vector(7 downto 0);
@@ -112,7 +112,7 @@ begin
         
         -- Only assign stuff when we're even active, right?
         if (draw_active = '1') then
-            if animation_select = '1' then
+            if animation_select(0) = '1' then
                 r_next <= shader_red;
                 g_next <= shader_green;
                 b_next <= shader_blue;
@@ -170,6 +170,7 @@ begin
             line_end => line_end_reached,
             frame_end => frame_end_reached,
             display_enable => draw_active,
+            animation_sel => animation_select(1),
             r => lut_red,
             g => lut_green,
             b => lut_blue,
