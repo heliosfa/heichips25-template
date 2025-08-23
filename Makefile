@@ -8,7 +8,7 @@ RUN_TAG = $(shell ls librelane/runs/ -1 | tail -n 1)
 # Macro - LibreLane
 
 macro:
-	cd librelane; librelane config.yaml --pdk $(PDK) --flow VHDLClassic
+	cd librelane; librelane config.yaml --pdk $(PDK) --flow Classic
 .PHONY: macro
 
 macro-openroad:
@@ -110,7 +110,8 @@ ulx3s.bit: ulx3s.config
 ## TANG NANO 9K
 
 NANO9K_SOURCES = $(wildcard src/*.vhdl)
-NANO9K_SYSVER = $(wildcard fpga/nano9k/*.sv)
+##NANO9K_SYSVER = $(wildcard fpga/nano9k/*.sv)
+NANO9K_SYSVER = $(wildcard fpga/nano9k/*.sv) $(wildcard sv/*.sv) $(wildcard sv/*.v)
 
 synth-nano9k: nano9k.json
 
@@ -119,8 +120,11 @@ pnr-nano9k: nano9k.fs
 upload-nano9k: nano9k.fs
 	openFPGALoader --board=tangnano9k nano9k.fs
 
+##nano9k.json: $(NANO9K_SOURCES)
+##	yosys -m ghdl -l $(basename $@)-yosys.log -DSYNTHESIS -DNANO9k -p 'ghdl $^ -e heichips25_template; synth_gowin -top nano9k_top -json $@' $(NANO9K_SYSVER)
+
 nano9k.json: $(NANO9K_SOURCES)
-	yosys -m ghdl -l $(basename $@)-yosys.log -DSYNTHESIS -DNANO9k -p 'ghdl $^ -e heichips25_template; synth_gowin -top nano9k_top -json $@' $(NANO9K_SYSVER)
+	yosys -m ghdl -l $(basename $@)-yosys.log -DSYNTHESIS -DNANO9k -p 'synth_gowin -top nano9k_top -json $@' $(NANO9K_SYSVER)
 
 nano9k_pnr.json: nano9k.json fpga/nano9k/nano9k.cst
 	nextpnr-himbaechel --json $< --write $@ \

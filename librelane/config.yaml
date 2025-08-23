@@ -1,16 +1,29 @@
 # LibreLane configuration file
 
 DESIGN_NAME: heichips25_template
-VHDL_FILES: 
-  - dir::../src/heichips25_template.vhdl
-  - dir::../src/tmds_encoder.vhdl
-  - dir::../src/TMDS_serializer.vhdl
-  - dir::../src/video.vhdl
-  - dir::../src/vtgen.vhdl
-  - dir::../src/shader.vhdl
-  - dir::../src/color_lut.vhdl
-  - dir::../src/gol_test.vhdl
+#VHDL_FILES: 
+#  - dir::../src/heichips25_template.vhdl
+#  - dir::../src/tmds_encoder.vhdl
+#  - dir::../src/TMDS_serializer.vhdl
+#  - dir::../src/video.vhdl
+#  - dir::../src/vtgen.vhdl
+#  - dir::../src/shader.vhdl
+#  - dir::../src/color_lut.vhdl
+#  - dir::../src/gol_test.vhdl
   #- dir::../src/pix_Streacher.vhdl
+
+VERILOG_FILES: 
+  - dir::../sv/heichips25_template.sv
+  - dir::../sv/clock_5_div.v
+  - dir::../sv/tmds_encoder.v
+  - dir::../sv/tmds_serializer.v
+  - dir::../sv/video.sv
+  - dir::../sv/vtgen_640_16_96_48_480_10_2_3.v
+  - dir::../sv/shader.v
+  - dir::../sv/color_lut.sv
+  - dir::../sv/gol_test.sv
+  - dir::../sv/pix_streacher.v
+  - dir::../sv/pix_feeder.sv
 CLOCK_PORT: clk
 CLOCK_PERIOD: 10 # 10ns = 100MHz
 

@@ -1,6 +1,6 @@
 `timescale 1ns / 1ps
 module heichips25_template(
-  input logic clk, rst_n, ena, clk_25,
+  input logic clk, rst_n, ena,
 
   // Standard I/O pins to the fabric
   input logic [7:0] ui_in,
@@ -26,12 +26,18 @@ module heichips25_template(
   assign reset = ~rst_n;    // We want active high reset for things...
 
   assign tmds_clk = clk_tmds;   // TMDS clock output
-  assign clk_video = clk_25;    // Needed for FPGA to work...
+  //assign clk_video = clk_25;    // Needed for FPGA to work...
   //assign clk_video = clk_tmds;    // What we want to use on FPGA
 
   // Unused Pins
   assign uio_out[7:5] = 0;
   assign uio_oe = '0;
+
+  clock_5_div clockdiv (
+    .clk(clk),
+    .reset(reset),
+    .clkdiv(clk_video)
+  );
 
   video videogen (
     .clk(clk_video),
