@@ -14,7 +14,7 @@ DESIGN_NAME: heichips25_template
 
 VERILOG_FILES: 
   - dir::../sv/heichips25_template.sv
-  - dir::../sv/divide_5.v
+  - dir::../sv/divide_5.sv
   - dir::../sv/tmds_encoder.v
   - dir::../sv/tmds_serializer.v
   - dir::../sv/video.sv

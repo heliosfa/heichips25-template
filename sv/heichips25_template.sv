@@ -36,7 +36,8 @@ module heichips25_template(
   `else
     divide_5 clockdiv (
       .clk(clk),
-     .clk_out(clk_video)
+      .rst_n(rst_n),
+      .clk_out(clk_video)
     );
   `endif
 
