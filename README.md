@@ -157,7 +157,7 @@ The issue should contain the following information:
 
 - The name of your group
 - The name of your project
-- The group members
+- The group membersv
 - The link to your repository
 
 > [!IMPORTANT]

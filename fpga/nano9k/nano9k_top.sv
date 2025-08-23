@@ -108,7 +108,7 @@ module nano9k_top (
     logic tmds_clk;
     
     `define GOWIN_FPGA
-    heichips25_template heichips25_template (
+    heichips25_bagel heichips25_bagel (
         .ui_in  (ui_in),    // Dedicated inputs
         .uo_out (uo_out),   // Dedicated outputs
         .uio_in (uio_in),   // IOs: Input path

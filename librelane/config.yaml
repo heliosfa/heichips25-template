@@ -1,6 +1,6 @@
 # LibreLane configuration file
 
-DESIGN_NAME: heichips25_template
+DESIGN_NAME: heichips25_bagel
 #VHDL_FILES: 
 #  - dir::../src/heichips25_template.vhdl
 #  - dir::../src/tmds_encoder.vhdl
@@ -13,7 +13,7 @@ DESIGN_NAME: heichips25_template
   #- dir::../src/pix_Streacher.vhdl
 
 VERILOG_FILES: 
-  - dir::../sv/heichips25_template.sv
+  - dir::../sv/heichips25_bagel.sv
   - dir::../sv/divide_5.sv
   - dir::../sv/tmds_encoder.v
   - dir::../sv/tmds_serializer.v

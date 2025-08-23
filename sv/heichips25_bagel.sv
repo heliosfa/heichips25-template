@@ -1,5 +1,5 @@
 `timescale 1ns / 1ps
-module heichips25_template(
+module heichips25_bagel(
   input logic clk, rst_n, ena,
 
   // Standard I/O pins to the fabric
