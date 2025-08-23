@@ -32,13 +32,12 @@ module heichips25_template(
   // Unused Pins
   assign uio_out[7:5] = 0;
   assign uio_oe = '0;
-
-  clock_5_div clockdiv (
+  
+  divide_5 clkdiv5 (
     .clk(clk),
-    .reset(reset),
-    .clkdiv(clk_video)
+    .clk_out(clk_video)
   );
-
+  
   video videogen (
     .clk(clk_video),
     .reset(reset),
