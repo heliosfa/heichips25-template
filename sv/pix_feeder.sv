@@ -78,9 +78,9 @@ module pixel_feeder(
   
 
   // The counters that make it all work:  
-  // Horizontal pixel counter. Increments every 10th pixel
-  always_ff @(posedge clk_25 or negedge rst_n) begin
-  if (state == s_blank || !rst_n) begin 
+  always_ff @(posedge clk_25) begin
+    // Horizontal pixel counter. Increments every 10th pixel
+    if (state == s_blank || !rst_n) begin 
       h_counter <= 0;                // Hold at 0 during display inactive to resync.
       h_pix <= 0;                    // Hold horizontal pixel count at 0 during display inactive to resync.
     end
@@ -91,22 +91,21 @@ module pixel_feeder(
         h_pix <= h_pix + 1;             // Increment the horizontal pixel co-ordinate.
       end
     end
-  end
-    
-  // Vertical pixel count, incremented on line_end. Async reset on frame_end
-  always_ff @(posedge line_end or posedge frame_end) begin   
+
+    // Vertical pixel count, incremented on line_end. Async reset on frame_end
     if (frame_end || !rst_n) begin
       v_counter <= 0;     // resync counter on frame end
       v_pix <= 0;
     end
-    else if (state != s_blank) begin
+    else if ((state != s_blank) && (line_end)) begin
       if (v_counter < 9) v_counter <= v_counter + 1;
       else begin 
         v_counter <= 0;
-        if (v_pix < 47) v_pix <= v_pix +1;              // Increment the vertical pixel co-ordinate
-        else v_pix <= 0;
+        v_pix <= v_pix + 1;              // Increment the vertical pixel co-ordinate
+        //if (v_pix < 47) v_pix <= v_pix +1;              // Increment the vertical pixel co-ordinate
+        //else v_pix <= 0;
       end
     end
-  end    
+  end   
   
 endmodule
