@@ -54,10 +54,10 @@ module pixel_feeder(
   always_comb begin
     if (state == s_mem_read) begin
       if (v_pix == 47) begin // Edge case if we are on the last line
-        if (h_pix == 63 && v_counter == 0) {addr,pix_sel} = {6'b000000,6'b000000};
+        if (line_end || frame_end) {addr,pix_sel} = {6'b000000,6'b000000};
         else {addr,pix_sel} = {6'b000000,h_pix}-1;
       end else begin 
-        if (h_pix == 63 && v_counter == 0) {addr,pix_sel} = {(v_pix),6'b111111};   //Edge case to grab the last pixel
+        if (line_end) {addr,pix_sel} = {(v_pix+1),h_pix};   //Edge case to grab the last pixel
         else {addr,pix_sel} = {(v_pix+1),h_pix}-1;                              // Set the memory address to get the nextrow
       end
     end else  {addr,pix_sel} = '0;              // Clear the memory address
@@ -71,7 +71,7 @@ module pixel_feeder(
   always_ff @(negedge clk_25) begin
     if(state == s_mem_read) begin
       // Save the pixel from the memory interface.
-      if(h_pix == 63 && v_counter == 0) row[63] <= pixel_in;    // Edge case for  the last pixel
+      if (line_end) row[63] <= pixel_in;    // Edge case for  the last pixel
       else row[h_pix-1] <= pixel_in;
     end
   end
