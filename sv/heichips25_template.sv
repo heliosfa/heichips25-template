@@ -26,18 +26,22 @@ module heichips25_template(
   assign reset = ~rst_n;    // We want active high reset for things...
 
   assign tmds_clk = clk_tmds;   // TMDS clock output
-  //assign clk_video = clk_25;    // Needed for FPGA to work...
-  //assign clk_video = clk_tmds;    // What we want to use on FPGA
 
   // Unused Pins
   assign uio_out[7:5] = 0;
   assign uio_oe = '0;
+
+  `ifdef GOWIN_FPGA
+    assign clk_video = ena;    // Needed for FPGA to work...
+  `else
+    divide_5 clockdiv (
+      .clk(clk),
+     .clk_out(clk_video)
+    );
+  `endif
+
   
-  divide_5 clkdiv5 (
-    .clk(clk),
-    .clk_out(clk_video)
-  );
-  
+
   video videogen (
     .clk(clk_video),
     .reset(reset),

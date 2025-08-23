@@ -84,6 +84,16 @@ module nano9k_top (
       .LOCK(locked)
     );
 
+    logic clk_25;
+    CLKDIV #(
+    .DIV_MODE(5)
+    ) clkdiv_inst (
+    .CALIB(1'b0),
+    .CLKOUT(clk_25),
+    .HCLKIN(clk_100),
+    .RESETN(rst_n)
+    );
+
     logic clk;
     logic rst_n;
     logic ena;
@@ -97,13 +107,14 @@ module nano9k_top (
     logic tmds_g;
     logic tmds_clk;
     
+    `define GOWIN_FPGA
     heichips25_template heichips25_template (
         .ui_in  (ui_in),    // Dedicated inputs
         .uo_out (uo_out),   // Dedicated outputs
         .uio_in (uio_in),   // IOs: Input path
         .uio_out(uio_out),  // IOs: Output path
         .uio_oe (uio_oe),   // IOs: Enable path (active high: 0=input, 1=output)
-        .ena    (ena),      // enable - goes high when design is selected
+        .ena    (clk_25),   // Gotta use DIV-5 IP thing...
         .clk    (clk),      // clock
         .rst_n  (rst_n),    // not reset
         .tmds_b (tmds_b),   // Blue
