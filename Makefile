@@ -168,7 +168,7 @@ basys3.bit: basys3.frames
 
 ## RealDigital Boolean
 
-BOOLEAN_SOURCES = $(wildcard fpga/boolean/*.sv) $(wildcard src/*.sv)
+BOOLEAN_SOURCES = $(wildcard fpga/boolean/*.sv) $(wildcard sv/*.sv) $(wildcard sv/*.v)
 
 synth-boolean: boolean.json
 
