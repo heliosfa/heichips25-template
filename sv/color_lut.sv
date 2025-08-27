@@ -1,4 +1,3 @@
-`timescale 1ns / 1ps
 module color_lut (
   input logic [3:0] in_color,
   output logic [7:0] red_channel, green_channel, blue_channel

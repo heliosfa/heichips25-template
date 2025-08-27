@@ -1,4 +1,3 @@
-`timescale 1ns / 1ps
 module vtgen_640_16_96_48_480_10_2_33
   (input  clk,
    input  reset,

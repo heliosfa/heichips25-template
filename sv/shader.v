@@ -1,4 +1,3 @@
-`timescale 1ns / 1ps
 module shader
   (input  clk,
    input  reset,

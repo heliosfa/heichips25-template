@@ -1,5 +1,3 @@
-`timescale 1ns / 1ps
-
 module gol_test (
   input logic clk,
   input logic reset,
@@ -54,7 +52,7 @@ module gol_test (
   // gol_counter
   always_ff @(posedge clk) begin 
     if(reset) gol_counter_reg <= 0;
-    else gol_counter_reg = gol_counter_reg + 1;
+    else gol_counter_reg <= gol_counter_reg + 1;
   end
 
   

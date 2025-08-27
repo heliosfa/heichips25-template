@@ -1,4 +1,3 @@
-`timescale 1ns / 1ps
 module pix_streacher
   (input  clk_25mhz,
    input  rst,

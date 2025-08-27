@@ -61,7 +61,7 @@ module pixel_feeder(
         else {addr,pix_sel} = {6'b000000,h_pix}-1;
       end else begin 
         if (video_x == 640) {addr,pix_sel} = {(v_pix),6'b111111};
-        else {addr,pix_sel} = {(v_pix+1),h_pix}-1;
+        else {addr,pix_sel} = {(v_pix+6'b000001),h_pix}-1;
       end
     end else  {addr,pix_sel} = '0;              // Clear the memory address
   end

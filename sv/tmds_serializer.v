@@ -1,4 +1,3 @@
-`timescale 1ns / 1ps
 module tmds_serializer
   (input  serclk,
    input  rst,
@@ -139,31 +138,31 @@ module tmds_serializer
   /* TMDS_serializer.vhdl:72:71  */
   assign n461 = shift_reg_c[1]; // extract
   /* TMDS_serializer.vhdl:52:9  */
-  always @(posedge serclk or posedge rst)
+  always @(posedge serclk)
     if (rst)
       n462 <= 10'b0000000000;
     else
       n462 <= n427;
   /* TMDS_serializer.vhdl:52:9  */
-  always @(posedge serclk or posedge rst)
+  always @(posedge serclk)
     if (rst)
       n463 <= 10'b0000000000;
     else
       n463 <= n428;
   /* TMDS_serializer.vhdl:52:9  */
-  always @(posedge serclk or posedge rst)
+  always @(posedge serclk)
     if (rst)
       n464 <= 10'b0000000000;
     else
       n464 <= n429;
   /* TMDS_serializer.vhdl:52:9  */
-  always @(posedge serclk or posedge rst)
+  always @(posedge serclk)
     if (rst)
       n465 <= 10'b0000000000;
     else
       n465 <= n431;
   /* TMDS_serializer.vhdl:52:9  */
-  always @(posedge serclk or posedge rst)
+  always @(posedge serclk)
     if (rst)
       n466 <= 3'b100;
     else

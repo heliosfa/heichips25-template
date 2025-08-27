@@ -1,4 +1,3 @@
-`timescale 1ns / 1ps
 module video (
   input logic clk, reset,
   input  logic [1:0] animation_select,
