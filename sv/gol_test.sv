@@ -25,7 +25,7 @@ module gol_test (
   logic [7:0] red_channel;
   logic [7:0] green_channel;
   logic [7:0] blue_channel;
-  logic [3:0] data_out;
+  //logic [3:0] data_out;
   logic [3:0] gol_counter_reg, pf_out, col_to_lut;
 
   assign rst_n = ~reset;
