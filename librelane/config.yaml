@@ -16,7 +16,7 @@ VERILOG_FILES:
   - dir::../sv/heichips25_bagel.sv
   - dir::../sv/divide_5.sv
   - dir::../sv/tmds_encoder.sv
-  - dir::../sv/tmds_serializer.v
+  - dir::../sv/tmds_serializer.sv
   - dir::../sv/video.sv
   - dir::../sv/vtgen_640_16_96_48_480_10_2_3.v
   - dir::../sv/shader.v
