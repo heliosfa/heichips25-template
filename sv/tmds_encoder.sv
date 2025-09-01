@@ -1,3 +1,25 @@
+// TEROSHDL Documentation:
+//! @title TMDS Encoder
+//! @author Pascal G. (gfcwfzkm), Graeme Bragg (heliosfa) [SystemVerilog refactor]
+//! @version 1.0_sv
+//! @date 1.09.2025
+//! @brief Encodes the color data into TMDS format for DVI/HDMI output.
+//!
+//! This is a SystemVerilog refactor of a VHDL module that encodes the color data 
+//! into TMDS format, which is used for DVI and HDMI video outputs.It implements the
+//! transition-minimizing encoding algorithm and DC balancing to ensure a balanced signal.
+//! The control signals are also handled.
+//! 
+//! Make sure to use them only for the blue TMDS channel, as the
+//! red and green channels carry other data when the display is not active. In this case, 
+//! tie the hsync and vsync signals to '0' for the red and green channels.
+//!
+//! The TMDS encoding process is as follows:
+//! ![DVI TMDS Video Data Encode Algorithm](https://fpga.mit.edu/6205/_static/F24/assignments/hdmi/tmds_tm/flowchart.png)
+//!
+//! Image from https://fpga.mit.edu/6205/F24/assignments/hdmi/tmds_tm, which is from the HDMI 1.3 specs.
+
+
 module tmds_encoder(
   input  clk,
   input  reset,
