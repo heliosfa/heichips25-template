@@ -46,13 +46,9 @@ module tmds_encoder(
 
   // Fucntion to count all the ones in an 8-bit value
   function logic [3:0] count_ones8 (input [7:0] s);
-    logic [3:0] i;
-    begin
-      count_ones8 = '0;
-      for (i = 0; i < 8; i = i + 1) begin
-        count_ones8 = count_ones8 + {3'b0, s[i[2:0]]};
-      end
-    end
+    count_ones8 = '0;
+    for (logic [3:0] i = 0; i < 8; i = i + 1)
+      count_ones8 = count_ones8 + {3'b0, s[i[2:0]]};
   endfunction
 
 
@@ -67,12 +63,12 @@ module tmds_encoder(
 
   // Output logic
   assign tmds_encoded = tmds_output_reg; 
+  
 
-
-  // Build XOR/XNOR chains as pure continuous logic because doing this in an always_comb 
-  // falls into the "always_comb trap" (ALWCOMBORDER). 
-  // Build xored_color_data and xnored_color_data from color_data with prefix XOR/XNOR,
-  // matching the original VHDL behavior. This is circular combinatorial logic...
+  // Build the transition minimising XOR/XNOR chains. Note that they are flipped for some reason...
+  // Doing this in an always_comb block falls into the "always_comb trap" (ALWCOMBORDER).
+  // Doing this with a generate makes Verilator unhappy with an UNOPTFLAT circular combinational warning 
+  /*
   logic [7:0] __xo_prefix, __xno_prefix;
 
   assign __xo_prefix[0]  = color_data[0];
@@ -88,6 +84,25 @@ module tmds_encoder(
 
   assign xored_color_data  = __xo_prefix;
   assign xnored_color_data = __xno_prefix;
+  */
+  // So we do it with functions instead
+  function automatic [7:0] prefix_xor8 (input logic [7:0] d);
+    prefix_xor8[0] = d[0];
+    for (logic [3:0] n = 1; n < 8; n++)
+      prefix_xor8[n[2:0]] = prefix_xor8[n[2:0]-1] ^ d[n[2:0]];
+  endfunction
+
+  function automatic [7:0] prefix_xnor8 (input logic [7:0] d);
+    prefix_xnor8[0] = d[0];
+    for (logic [3:0] n = 1; n < 8; n++)
+      prefix_xnor8[n[2:0]] = ~(prefix_xnor8[n[2:0]-1] ^ d[n[2:0]]);
+  endfunction
+
+  assign xored_color_data  = prefix_xnor8(color_data); // xor = XNOR...
+  assign xnored_color_data = prefix_xor8(color_data);  // xnor = XOR...
+
+
+  // Get the one-count, xnor flag and intermediate tmds data.
   assign ones_in_color_data = count_ones8(color_data);
   assign use_xnor = (ones_in_color_data > 4) || ((ones_in_color_data == 4) && (color_data[0] == '0));
   assign tmds_intermediate = use_xnor ? {1'b0, xored_color_data} : {1'b1, xnored_color_data};
