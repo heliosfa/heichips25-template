@@ -27,6 +27,7 @@ module video (
   logic de_reg, hsync_reg, vsync_reg;
 
   logic [7:0] shader_red, shader_green, shader_blue;
+  logic [7:0] shader_red_two, shader_green_two, shader_blue_two; 
   logic [7:0] lut_red, lut_green, lut_blue;
 
   // Output logic
@@ -43,9 +44,15 @@ module video (
   always_comb begin
     case (animation_select[0])
       1'b1    :   begin
-        r_next = shader_red;
-        g_next = shader_green;
-        b_next = shader_blue;
+        if (animation_select[1]) begin
+          r_next = shader_red_two;
+          g_next = shader_green_two;
+          b_next = shader_blue_two;
+        end else begin
+          r_next = shader_red;
+          g_next = shader_green;
+          b_next = shader_blue;
+        end
       end
       default :   begin
         r_next = lut_red;
@@ -100,6 +107,19 @@ module video (
     .r(shader_red),
     .g(shader_green),
     .b(shader_blue)
+  );
+
+  shader_two another_shader (
+    .clk(clk),
+    .reset(reset),
+    .video_x(video_x),
+    .video_y(video_y),
+    .disp_active(draw_active),
+    .frame_end(frame_end_reached),
+    .line_end(line_end_reached),
+    .r(shader_red_two),
+    .g(shader_green_two),
+    .b(shader_blue_two)
   );
 
   // The tests involving the Color LUT

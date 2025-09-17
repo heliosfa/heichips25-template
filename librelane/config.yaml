@@ -20,6 +20,7 @@ VERILOG_FILES:
   - dir::../sv/video.sv
   - dir::../sv/vtgen_640_16_96_48_480_10_2_3.v
   - dir::../sv/shader.sv
+  - dir::../sv/shader_two.sv
   - dir::../sv/color_lut.sv
   - dir::../sv/gol_test.sv
   - dir::../sv/pix_streacher.v
