@@ -27,10 +27,11 @@ module shader_two (
 
     always_comb begin
         int unsigned tmp_x, h_x, h_y, q_x, q_y;
-        int rv, gv, bv;
+        int rv;
         int rv9, hv9, qv9;
+        logic [7:0] gv, bv;
 
-        tmp_x = 0;
+        tmp_x = 0 | {31'd0,line_end};
         h_x = 0;
         h_y = 0;
         q_x = 0;
@@ -62,11 +63,11 @@ module shader_two (
 
             rv = (rv9 & hv9 & qv9) << 5;
 
-            gv = (({22'b0, video_y} + time_cnt) % 8);
+            gv = 8'(({22'b0, video_y} + time_cnt) % 8);
             bv = gv;
 
             if ((rv > 40) && (rv < 70)) begin
-                bv = time_cnt;
+                bv = time_cnt[7:0];
             end
 
             if (rv == 0) begin

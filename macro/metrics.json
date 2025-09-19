@@ -1,7 +1,7 @@
 {
     "design__lint_error__count": 0,
     "design__lint_timing_construct__count": 0,
-    "design__lint_warning__count": 5,
+    "design__lint_warning__count": 3,
     "design__inferred_latch__count": 0,
     "design__instance__count": 8159,
     "design__instance__area": 93350.9,
@@ -108,8 +108,8 @@
     "design__instance__area__class:multi_input_combinational_cell": 32964,
     "flow__warnings__count": 1,
     "flow__errors__count": 0,
-    "design__power_grid_violation__count__net:VGND": 0,
     "design__power_grid_violation__count__net:VPWR": 0,
+    "design__power_grid_violation__count__net:VGND": 0,
     "design__power_grid_violation__count": 0,
     "design__instance__count__class:timing_repair_buffer": 347,
     "design__instance__area__class:timing_repair_buffer": 7056.2,
